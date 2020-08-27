@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/gongdb-input/static/css/main.5f361e03.chunk.css",
+    "main.js": "/gongdb-input/static/js/main.877fa4ca.chunk.js",
+    "main.js.map": "/gongdb-input/static/js/main.877fa4ca.chunk.js.map",
+    "runtime-main.js": "/gongdb-input/static/js/runtime-main.d4faccff.js",
+    "runtime-main.js.map": "/gongdb-input/static/js/runtime-main.d4faccff.js.map",
+    "static/js/2.bec6d75b.chunk.js": "/gongdb-input/static/js/2.bec6d75b.chunk.js",
+    "static/js/2.bec6d75b.chunk.js.map": "/gongdb-input/static/js/2.bec6d75b.chunk.js.map",
+    "index.html": "/gongdb-input/index.html",
+    "precache-manifest.3ef8abb5e3095c11c8e136f26893e387.js": "/gongdb-input/precache-manifest.3ef8abb5e3095c11c8e136f26893e387.js",
+    "service-worker.js": "/gongdb-input/service-worker.js",
+    "static/css/main.5f361e03.chunk.css.map": "/gongdb-input/static/css/main.5f361e03.chunk.css.map",
+    "static/js/2.bec6d75b.chunk.js.LICENSE.txt": "/gongdb-input/static/js/2.bec6d75b.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/gongdb-input/static/media/logo.5d5d9eef.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d4faccff.js",
+    "static/js/2.bec6d75b.chunk.js",
+    "static/css/main.5f361e03.chunk.css",
+    "static/js/main.877fa4ca.chunk.js"
+  ]
+}
