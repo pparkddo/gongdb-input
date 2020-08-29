@@ -1,0 +1,15 @@
+.pill-checkbox {
+    margin: 10px;
+    padding: 7px 12px;
+    border-radius: 25px;
+    border: solid 1px;
+    border-color: #bbb;
+}
+
+.pill-label {
+    color: #14a4be;
+}
+
+.pill-checkbox .checked {
+    color: #ffffff;
+}
