@@ -66,6 +66,7 @@ function App() {
               "전공능력",
             ].map((value, index) => (
               <PillCheckbox 
+                key={index}
                 id={`check-${index}`}
                 label={value}
               />
