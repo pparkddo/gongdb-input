@@ -1,79 +1,277 @@
-import React from 'react';
-import { Col, Container, Form } from "react-bootstrap";
+import React, { useRef, useState } from 'react';
+import { Button, Col, Container, Form, Table, Alert } from "react-bootstrap";
 import PillCheckbox from './component/PillCheckbox';
 
+interface InputData {
+  certificates: string
+  companyName: string
+  departments: string
+  headCount: string
+  languageScore: string
+  link: string
+  ncs0: boolean
+  ncs1: boolean
+  ncs2: boolean 
+  ncs3: boolean 
+  ncs4: boolean 
+  ncs5: boolean 
+  ncs6: boolean 
+  ncs7: boolean 
+  ncs8: boolean 
+  noticeYear: string
+  position: string
+  sequence: string
+  subjects: string
+}
+
+interface FormData {
+  certificates: string
+  companyName: string
+  departments: string
+  headCount: string
+  languageScore: string
+  link: string
+  ncs: string
+  noticeYear: string
+  position: string
+  sequence: string
+  subjects: string
+}
+
+const ncs = [
+  "의사소통능력",
+  "문제해결능력",
+  "대인관계능력",
+  "자원관리능력",
+  "직업윤리",
+  "정보능력",
+  "수리능력",
+  "직무수행능력",
+  "전공능력",
+];
+
+const SEPARATOR = ",";
+
+const getNcsValues = (inputData: InputData): string => {
+  const ncsChecked = [
+    inputData.ncs0,
+    inputData.ncs1,
+    inputData.ncs2,
+    inputData.ncs3,
+    inputData.ncs4,
+    inputData.ncs5,
+    inputData.ncs6,
+    inputData.ncs7,
+    inputData.ncs8,
+  ];
+  return ncs.filter((_, index) => ncsChecked[index]).join(SEPARATOR);
+};
+
+const convertInputDataToFormData = (inputData: InputData): FormData => { 
+  return {
+    certificates: inputData.certificates,
+    companyName: inputData.companyName,
+    departments: inputData.departments, 
+    headCount: inputData.headCount,
+    languageScore: inputData.languageScore,
+    link: inputData.link,
+    ncs: getNcsValues(inputData),
+    noticeYear: inputData.noticeYear,
+    position: inputData.position,
+    sequence: inputData.sequence,
+    subjects: inputData.subjects
+  };
+};
+
+const exportJSON = (object: any) => {
+  var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object));
+  
+  let a = document.createElement("a");
+  a.href = "data:" + data;
+  a.download = "data.json";
+
+  a.click();
+  a.remove();
+};
+
 function App() {
+  const [formData, setFormData] = useState<FormData[]>([]);
+  const [show, setShow] = useState(false);
+
+  const companyNameInput = useRef<HTMLInputElement>(null);
+
+  const clearForm = (): void => {
+    document.querySelectorAll(".form-control").forEach((element) => {
+      (element as HTMLInputElement).value = "";
+    });
+
+    document.querySelectorAll(".form-check-input").forEach((element) => {
+      const isChecked = (element as HTMLInputElement).checked;
+      if (isChecked) {
+        (element as HTMLInputElement).click();
+      }
+    });
+  };
+
+  const focusOnFirst = (): void => {
+    companyNameInput?.current?.focus();
+  };
+
+  const getInputData = (): InputData => {
+    let value = {};
+
+    document.querySelectorAll(".form-control").forEach((element) => {
+      const inputValue = (element as HTMLInputElement).value;
+      value = {...value, [element.id]: inputValue};
+    })
+    
+    document.querySelectorAll(".form-check-input").forEach((element) => {
+      const isChecked = (element as HTMLInputElement).checked;
+      value = {...value, [element.id]: isChecked};
+    })
+
+    return value as InputData;
+  };
+
+  const showAlert = (): void => {
+    setShow(true);
+    setTimeout(() => {
+      setShow(false);
+    }, 1000);
+  };
+
+  const handleClick = (): void => {
+    setFormData([...formData, convertInputDataToFormData(getInputData())]);
+    clearForm();
+    focusOnFirst();
+    showAlert();
+  };
+
   return (
     <Container>
+      <Alert show={show} variant="success">
+        <Alert.Heading>입력완료!</Alert.Heading>
+        <p>
+          정상적으로 입력되었습니다.
+        </p>
+      </Alert>
       <Form>
         <Form.Row className="my-5">
           <Col xs={12} md={3}>
             <Form.Label>회사명</Form.Label>
-            <Form.Control placeholder="한국전력공사" />
+            <Form.Control id="companyName" placeholder="한국전력공사" ref={companyNameInput} />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>공고연도</Form.Label>
-            <Form.Control placeholder="2020" />
+            <Form.Control id="noticeYear" placeholder="2020" />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>차수</Form.Label>
-            <Form.Control placeholder="상반기" />
+            <Form.Control id="sequence" placeholder="상반기" />
           </Col>
           <Col xs={12} md={2}>
             <Form.Label>지원가능 어학성적</Form.Label>
-            <Form.Control placeholder="700" />
+            <Form.Control id="languageScore" placeholder="700" />
           </Col>
           <Col xs={12} md={5}>
             <Form.Label>링크</Form.Label>
-            <Form.Control placeholder="https://recruit.kepco.co.kr" />
+            <Form.Control id="link" placeholder="https://recruit.kepco.co.kr" />
           </Col>
         </Form.Row>
         <Form.Row className="my-5">
           <Col xs={12} md={3}>
             <Form.Label>직군</Form.Label>
-            <Form.Control placeholder="사무" />
+            <Form.Control id="position" placeholder="사무" />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>채용인원</Form.Label>
-            <Form.Control placeholder="390" />
+            <Form.Control id="headCount" placeholder="390" />
           </Col>
           <Col xs={12} md={8}>
             <Form.Label>과목</Form.Label>
-            <Form.Control placeholder="경영,재무,회계" />
+            <Form.Control id="subjects" placeholder="경영,재무,회계" />
           </Col>
         </Form.Row>
         <Form.Row className="align-items-center mt-5">
           <Col xs={12} md={6}>
             <Form.Label>지원가능 자격증</Form.Label>
-            <Form.Control placeholder="정보처리기사" />
+            <Form.Control id="certificates" placeholder="정보처리기사" />
           </Col>
           <Col xs={12} md={6}>
             <Form.Label>지원가능 학과</Form.Label>
-            <Form.Control placeholder="경영학과,경제학과,짱사무스러운학과" />
+            <Form.Control id="departments" placeholder="경영학과,경제학과,짱사무스러운학과" />
           </Col>
         </Form.Row>
         <Form.Row className="my-5">
           {
-            [
-              "의사소통능력",
-              "문제해결능력",
-              "대인관계능력",
-              "자원관리능력",
-              "직업윤리",
-              "정보능력",
-              "수리능력",
-              "직무수행능력",
-              "전공능력",
-            ].map((value, index) => (
+            ncs.map((value, index) => (
               <PillCheckbox 
                 key={index}
-                id={`check-${index}`}
+                id={`ncs${index}`}
                 label={value}
               />
             ))
           }
         </Form.Row>
+        <Form.Row className="my-5">
+          <Col xs={12} md={10}>
+            <Button 
+              block
+              variant="info" 
+              onClick={handleClick}
+            >
+              입력
+            </Button>
+          </Col>
+          <Col xs={12} md={2}>
+            <Button 
+              block
+              variant="outline-info" 
+              onClick={() => exportJSON(formData)}
+            >
+              다운로드
+            </Button>
+          </Col>
+        </Form.Row>
       </Form>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>회사명</th>
+            <th>공고연도</th>
+            <th>차수</th>
+            <th>어학</th>
+            <th>링크</th>
+            <th>직군</th>
+            <th>인원</th>
+            <th>과목</th>
+            <th>자격증</th>
+            <th>학과</th>
+            <th>NCS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            formData.map((value, index) => (
+              <tr key={index}>
+                <td>{index+1}</td>
+                <td>{value.companyName}</td>
+                <td>{value.noticeYear}</td>
+                <td>{value.sequence}</td>
+                <td>{value.languageScore}</td>
+                <td>{value.link}</td>
+                <td>{value.position}</td>
+                <td>{value.headCount}</td>
+                <td>{value.subjects}</td>
+                <td>{value.certificates}</td>
+                <td>{value.departments}</td>
+                <td>{value.ncs}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </Table>
     </Container>
   );
 };
