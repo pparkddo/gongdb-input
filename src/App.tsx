@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, Col, Container, Form, Table, Alert } from "react-bootstrap";
+import { Button, Col, Container, Form, Table, Alert, Modal } from "react-bootstrap";
 import PillCheckbox from './component/PillCheckbox';
 
 interface InputData {
@@ -96,7 +96,9 @@ const exportJSON = (object: any) => {
 
 function App() {
   const [formData, setFormData] = useState<FormData[]>([]);
-  const [show, setShow] = useState(false);
+  const [clickedIndex, setClickedIndex] = useState<number>();
+  const [show, setShow] = useState<boolean>(false);
+  const [modalShow, setModalShow] = useState<boolean>(false);
 
   const companyNameInput = useRef<HTMLInputElement>(null);
 
@@ -140,12 +142,20 @@ function App() {
     }, 1000);
   };
 
-  const handleClick = (): void => {
+  const handleInputClick = (): void => {
     setFormData([...formData, convertInputDataToFormData(getInputData())]);
     clearForm();
     focusOnFirst();
     showAlert();
   };
+
+  const removeFormData = (removeIndex: number): void => {
+    hideModal();
+    setFormData(formData.filter((_, index) => index !== removeIndex));
+  };
+
+  const hideModal = () => setModalShow(false);
+  const showModal = () => setModalShow(true);
 
   return (
     <Container>
@@ -155,6 +165,22 @@ function App() {
           정상적으로 입력되었습니다.
         </p>
       </Alert>
+
+      <Modal show={modalShow} onHide={hideModal} animation={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>데이터 삭제</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{(clickedIndex as number)+1}번 데이터를 삭제하시겠습니까</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={hideModal}>
+            취소
+          </Button>
+          <Button variant="primary" onClick={() => removeFormData(clickedIndex as number)}>
+            삭제 
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Form>
         <Form.Row className="my-5">
           <Col xs={12} md={3}>
@@ -218,7 +244,7 @@ function App() {
             <Button 
               block
               variant="info" 
-              onClick={handleClick}
+              onClick={handleInputClick}
             >
               입력
             </Button>
@@ -254,7 +280,14 @@ function App() {
         <tbody>
           {
             formData.map((value, index) => (
-              <tr key={index}>
+              <tr 
+                key={index} 
+                data-key={index} 
+                onClick={() => {
+                  setClickedIndex(index);
+                  showModal();
+                }}
+              >
                 <td>{index+1}</td>
                 <td>{value.companyName}</td>
                 <td>{value.noticeYear}</td>
