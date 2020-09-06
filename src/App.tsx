@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, Col, Container, Form, Table, Alert, Modal } from "react-bootstrap";
+import { Button, Col, Container, Form, Modal, Table, Toast } from "react-bootstrap";
 import PillCheckbox from './component/PillCheckbox';
 
 interface InputData {
@@ -97,7 +97,7 @@ const exportJSON = (object: any) => {
 function App() {
   const [formData, setFormData] = useState<FormData[]>([]);
   const [clickedIndex, setClickedIndex] = useState<number>();
-  const [show, setShow] = useState<boolean>(false);
+  const [toastShow, setToastShow] = useState<boolean>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
 
   const companyNameInput = useRef<HTMLInputElement>(null);
@@ -135,18 +135,11 @@ function App() {
     return value as InputData;
   };
 
-  const showAlert = (): void => {
-    setShow(true);
-    setTimeout(() => {
-      setShow(false);
-    }, 1000);
-  };
-
   const handleInputClick = (): void => {
     setFormData([...formData, convertInputDataToFormData(getInputData())]);
     clearForm();
     focusOnFirst();
-    showAlert();
+    setToastShow(true);
   };
 
   const removeFormData = (removeIndex: number): void => {
@@ -159,12 +152,15 @@ function App() {
 
   return (
     <Container>
-      <Alert show={show} variant="success">
-        <Alert.Heading>입력완료!</Alert.Heading>
-        <p>
-          정상적으로 입력되었습니다.
-        </p>
-      </Alert>
+      <Toast 
+        autohide 
+        show={toastShow} 
+        onClose={() => setToastShow(false)} 
+        style={{position: "absolute", top: 0, right: 0}}
+      >
+        <Toast.Header closeButton={false}>입력완료</Toast.Header>
+        <Toast.Body>정상적으로 입력되었습니다</Toast.Body>
+      </Toast>
 
       <Modal show={modalShow} onHide={hideModal} animation={false}>
         <Modal.Header closeButton>
