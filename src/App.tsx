@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Button, Col, Container, Form, Modal, Table, Toast } from "react-bootstrap";
+import { Alert, Button, Col, Container, Form, Modal, Table } from "react-bootstrap";
 import PillCheckbox from './component/PillCheckbox';
+import "./App.css";
 
 interface InputData {
   certificates: string
@@ -135,11 +136,18 @@ function App() {
     return value as InputData;
   };
 
+  const toastAlert = (): void => {
+    setToastShow(true);
+    setTimeout(() => {
+      setToastShow(false);
+    }, 1000);
+  };
+
   const handleInputClick = (): void => {
     setFormData([...formData, convertInputDataToFormData(getInputData())]);
     clearForm();
     focusOnFirst();
-    setToastShow(true);
+    toastAlert();
   };
 
   const removeFormData = (removeIndex: number): void => {
@@ -152,15 +160,13 @@ function App() {
 
   return (
     <Container>
-      <Toast 
-        autohide 
+      <Alert
+        variant="success"
         show={toastShow} 
-        onClose={() => setToastShow(false)} 
-        style={{position: "absolute", top: 0, right: 0}}
+        style={{position: "absolute", top: 15, right: 15}}
       >
-        <Toast.Header closeButton={false}>입력완료</Toast.Header>
-        <Toast.Body>정상적으로 입력되었습니다</Toast.Body>
-      </Toast>
+        정상적으로 입력되었습니다
+      </Alert>
 
       <Modal show={modalShow} onHide={hideModal} animation={false}>
         <Modal.Header closeButton>
@@ -168,10 +174,10 @@ function App() {
         </Modal.Header>
         <Modal.Body>{(clickedIndex as number)+1}번 데이터를 삭제하시겠습니까</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={hideModal}>
+          <Button variant="light" onClick={hideModal}>
             취소
           </Button>
-          <Button variant="primary" onClick={() => removeFormData(clickedIndex as number)}>
+          <Button variant="danger" onClick={() => removeFormData(clickedIndex as number)}>
             삭제 
           </Button>
         </Modal.Footer>
@@ -181,50 +187,50 @@ function App() {
         <Form.Row className="my-5">
           <Col xs={12} md={3}>
             <Form.Label>회사명</Form.Label>
-            <Form.Control id="companyName" placeholder="한국전력공사" ref={companyNameInput} />
+            <Form.Control id="companyName" placeholder="한국전력공사" ref={companyNameInput} autoComplete="off" />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>공고연도</Form.Label>
-            <Form.Control id="noticeYear" placeholder="2020" />
+            <Form.Control id="noticeYear" placeholder="2020" autoComplete="off" />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>차수</Form.Label>
-            <Form.Control id="sequence" placeholder="상반기" />
+            <Form.Control id="sequence" placeholder="상반기" autoComplete="off" />
           </Col>
           <Col xs={12} md={2}>
             <Form.Label>지원가능 어학성적</Form.Label>
-            <Form.Control id="languageScore" placeholder="700" />
+            <Form.Control id="languageScore" placeholder="700" autoComplete="off" />
           </Col>
           <Col xs={12} md={5}>
             <Form.Label>링크</Form.Label>
-            <Form.Control id="link" placeholder="https://recruit.kepco.co.kr" />
+            <Form.Control id="link" placeholder="https://recruit.kepco.co.kr" autoComplete="off" />
           </Col>
         </Form.Row>
         <Form.Row className="my-5">
           <Col xs={12} md={3}>
             <Form.Label>직군</Form.Label>
-            <Form.Control id="position" placeholder="사무" />
+            <Form.Control id="position" placeholder="사무" autoComplete="off" />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>채용인원</Form.Label>
-            <Form.Control id="headCount" placeholder="390" />
+            <Form.Control id="headCount" placeholder="390" autoComplete="off" />
           </Col>
           <Col xs={12} md={8}>
             <Form.Label>과목</Form.Label>
-            <Form.Control id="subjects" placeholder="경영,재무,회계" />
+            <Form.Control id="subjects" placeholder="경영,재무,회계" autoComplete="off" />
           </Col>
         </Form.Row>
         <Form.Row className="align-items-center mt-5">
           <Col xs={12} md={6}>
             <Form.Label>지원가능 자격증</Form.Label>
-            <Form.Control id="certificates" placeholder="정보처리기사" />
+            <Form.Control id="certificates" placeholder="정보처리기사" autoComplete="off" />
           </Col>
           <Col xs={12} md={6}>
             <Form.Label>지원가능 학과</Form.Label>
-            <Form.Control id="departments" placeholder="경영학과,경제학과,짱사무스러운학과" />
+            <Form.Control id="departments" placeholder="경영학과,경제학과,짱사무스러운학과" autoComplete="off" />
           </Col>
         </Form.Row>
-        <Form.Row className="my-5">
+        <Form.Row className="my-5 justify-content-center">
           {
             ncs.map((value, index) => (
               <PillCheckbox 
@@ -256,51 +262,55 @@ function App() {
           </Col>
         </Form.Row>
       </Form>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>회사명</th>
-            <th>공고연도</th>
-            <th>차수</th>
-            <th>어학</th>
-            <th>링크</th>
-            <th>직군</th>
-            <th>인원</th>
-            <th>과목</th>
-            <th>자격증</th>
-            <th>학과</th>
-            <th>NCS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            formData.map((value, index) => (
-              <tr 
-                key={index} 
-                data-key={index} 
-                onClick={() => {
-                  setClickedIndex(index);
-                  showModal();
-                }}
-              >
-                <td>{index+1}</td>
-                <td>{value.companyName}</td>
-                <td>{value.noticeYear}</td>
-                <td>{value.sequence}</td>
-                <td>{value.languageScore}</td>
-                <td>{value.link}</td>
-                <td>{value.position}</td>
-                <td>{value.headCount}</td>
-                <td>{value.subjects}</td>
-                <td>{value.certificates}</td>
-                <td>{value.departments}</td>
-                <td>{value.ncs}</td>
+      {
+        formData.length > 0
+        ? <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>회사명</th>
+                <th>공고연도</th>
+                <th>차수</th>
+                <th>어학</th>
+                <th>링크</th>
+                <th>직군</th>
+                <th>인원</th>
+                <th>과목</th>
+                <th>자격증</th>
+                <th>학과</th>
+                <th>NCS</th>
               </tr>
-            ))
-          }
-        </tbody>
-      </Table>
+            </thead>
+            <tbody>
+              {
+                formData.map((value, index) => (
+                  <tr 
+                    key={index} 
+                    data-key={index} 
+                    onClick={() => {
+                      setClickedIndex(index);
+                      showModal();
+                    }}
+                  >
+                    <td>{index+1}</td>
+                    <td>{value.companyName}</td>
+                    <td>{value.noticeYear}</td>
+                    <td>{value.sequence}</td>
+                    <td>{value.languageScore}</td>
+                    <td>{value.link}</td>
+                    <td>{value.position}</td>
+                    <td>{value.headCount}</td>
+                    <td>{value.subjects}</td>
+                    <td>{value.certificates}</td>
+                    <td>{value.departments}</td>
+                    <td>{value.ncs}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </Table>
+        : null
+      }
     </Container>
   );
 };
