@@ -101,10 +101,10 @@ function App() {
   const [toastShow, setToastShow] = useState<boolean>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
 
-  const companyNameInput = useRef<HTMLInputElement>(null);
+  const positionElement = useRef<HTMLInputElement>(null);
 
   const clearForm = (): void => {
-    document.querySelectorAll(".form-control").forEach((element) => {
+    document.querySelectorAll(".erasable").forEach((element) => {
       (element as HTMLInputElement).value = "";
     });
 
@@ -117,7 +117,7 @@ function App() {
   };
 
   const focusOnFirst = (): void => {
-    companyNameInput?.current?.focus();
+    positionElement?.current?.focus();
   };
 
   const getInputData = (): InputData => {
@@ -174,12 +174,8 @@ function App() {
         </Modal.Header>
         <Modal.Body>{(clickedIndex as number)+1}번 데이터를 삭제하시겠습니까</Modal.Body>
         <Modal.Footer>
-          <Button variant="light" onClick={hideModal}>
-            취소
-          </Button>
-          <Button variant="danger" onClick={() => removeFormData(clickedIndex as number)}>
-            삭제 
-          </Button>
+          <Button variant="light" onClick={hideModal}>취소</Button>
+          <Button variant="danger" onClick={() => removeFormData(clickedIndex as number)}>삭제</Button>
         </Modal.Footer>
       </Modal>
 
@@ -187,7 +183,7 @@ function App() {
         <Form.Row className="my-5">
           <Col xs={12} md={3}>
             <Form.Label>회사명</Form.Label>
-            <Form.Control id="companyName" placeholder="한국전력공사" ref={companyNameInput} autoComplete="off" />
+            <Form.Control id="companyName" placeholder="한국전력공사" autoComplete="off" />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>공고연도</Form.Label>
@@ -209,25 +205,25 @@ function App() {
         <Form.Row className="my-5">
           <Col xs={12} md={3}>
             <Form.Label>직군</Form.Label>
-            <Form.Control id="position" placeholder="사무" autoComplete="off" />
+            <Form.Control id="position" className="erasable" placeholder="사무" autoComplete="off" ref={positionElement} />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>채용인원</Form.Label>
-            <Form.Control id="headCount" placeholder="390" autoComplete="off" />
+            <Form.Control id="headCount" className="erasable" placeholder="390" autoComplete="off" />
           </Col>
           <Col xs={12} md={8}>
             <Form.Label>과목</Form.Label>
-            <Form.Control id="subjects" placeholder="경영,재무,회계" autoComplete="off" />
+            <Form.Control id="subjects" className="erasable" placeholder="경영,재무,회계" autoComplete="off" />
           </Col>
         </Form.Row>
         <Form.Row className="align-items-center mt-5">
           <Col xs={12} md={6}>
             <Form.Label>지원가능 자격증</Form.Label>
-            <Form.Control id="certificates" placeholder="정보처리기사" autoComplete="off" />
+            <Form.Control id="certificates" className="erasable" placeholder="정보처리기사" autoComplete="off" />
           </Col>
           <Col xs={12} md={6}>
             <Form.Label>지원가능 학과</Form.Label>
-            <Form.Control id="departments" placeholder="경영학과,경제학과,짱사무스러운학과" autoComplete="off" />
+            <Form.Control id="departments" className="erasable" placeholder="경영학과,경제학과,짱사무스러운학과" autoComplete="off" />
           </Col>
         </Form.Row>
         <Form.Row className="my-5 justify-content-center">
