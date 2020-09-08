@@ -23,6 +23,7 @@ interface InputData {
   position: string
   sequence: string
   subjects: string
+  isEither: boolean
 }
 
 interface FormData {
@@ -37,6 +38,7 @@ interface FormData {
   position: string
   sequence: string
   subjects: string
+  isEither: boolean
 }
 
 const ncs = [
@@ -80,7 +82,8 @@ const convertInputDataToFormData = (inputData: InputData): FormData => {
     noticeYear: inputData.noticeYear,
     position: inputData.position,
     sequence: inputData.sequence,
-    subjects: inputData.subjects
+    subjects: inputData.subjects,
+    isEither: inputData.isEither
   };
 };
 
@@ -259,6 +262,23 @@ function App() {
               onClick={() => setIsSubjectReadOnly(!isSubjectReadOnly)}
             />
           </Col>
+          {
+            !isCertReadOnly && !isSubjectReadOnly
+            ? <Col xs={12} className="mt-3 text-right">
+                <Form.Check 
+                  inline 
+                  type="checkbox" 
+                  id="isEither"
+                  label="둘 중 하나만 만족하면 돼요" 
+                  onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
+                    if (event.key === "Enter") {
+                      event.currentTarget.checked = !event.currentTarget.checked
+                    }
+                  }}
+                />
+              </Col>
+            : null
+          }
           <Col xs={12} className="my-4 text-center">
             {
               ncs.map((value, index) => (
@@ -298,6 +318,7 @@ function App() {
                 <th>자격증</th>
                 <th>학과</th>
                 <th>NCS</th>
+                <th>둘중하나</th>
               </tr>
             </thead>
             <tbody>
@@ -323,6 +344,7 @@ function App() {
                     <td>{value.certificates}</td>
                     <td>{value.departments}</td>
                     <td>{value.ncs}</td>
+                    <td>{typeof value.isEither === "boolean" ? String(value.isEither) : ""}</td>
                   </tr>
                 ))
               }
