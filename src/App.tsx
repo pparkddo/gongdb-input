@@ -183,47 +183,47 @@ function App() {
         <Form.Row className="my-5">
           <Col xs={12} md={3}>
             <Form.Label>회사명</Form.Label>
-            <Form.Control id="companyName" placeholder="한국전력공사" autoComplete="off" />
+            <Form.Control id="companyName" autoComplete="off" />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>공고연도</Form.Label>
-            <Form.Control id="noticeYear" placeholder="2020" autoComplete="off" />
+            <Form.Control id="noticeYear" autoComplete="off" />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>차수</Form.Label>
-            <Form.Control id="sequence" placeholder="상반기" autoComplete="off" />
+            <Form.Control id="sequence" autoComplete="off" />
           </Col>
           <Col xs={12} md={2}>
             <Form.Label>지원가능 어학성적</Form.Label>
-            <Form.Control id="languageScore" placeholder="700" autoComplete="off" />
+            <Form.Control id="languageScore" autoComplete="off" />
           </Col>
           <Col xs={12} md={5}>
             <Form.Label>링크</Form.Label>
-            <Form.Control id="link" placeholder="https://recruit.kepco.co.kr" autoComplete="off" />
+            <Form.Control id="link" autoComplete="off" />
           </Col>
         </Form.Row>
         <Form.Row className="my-5">
           <Col xs={12} md={3}>
             <Form.Label>직군</Form.Label>
-            <Form.Control id="position" className="erasable" placeholder="사무" autoComplete="off" ref={positionElement} />
+            <Form.Control id="position" className="erasable" autoComplete="off" ref={positionElement} />
           </Col>
           <Col xs={12} md={1}>
             <Form.Label>채용인원</Form.Label>
-            <Form.Control id="headCount" className="erasable" placeholder="390" autoComplete="off" />
+            <Form.Control id="headCount" className="erasable" autoComplete="off" />
           </Col>
           <Col xs={12} md={8}>
             <Form.Label>과목</Form.Label>
-            <Form.Control id="subjects" className="erasable" placeholder="경영,재무,회계" autoComplete="off" />
+            <Form.Control id="subjects" className="erasable" autoComplete="off" />
           </Col>
         </Form.Row>
         <Form.Row className="align-items-center mt-5">
           <Col xs={12} md={6}>
             <Form.Label>지원가능 자격증</Form.Label>
-            <Form.Control id="certificates" className="erasable" placeholder="정보처리기사" autoComplete="off" />
+            <Form.Control id="certificates" className="erasable" autoComplete="off" />
           </Col>
           <Col xs={12} md={6}>
             <Form.Label>지원가능 학과</Form.Label>
-            <Form.Control id="departments" className="erasable" placeholder="경영학과,경제학과,짱사무스러운학과" autoComplete="off" />
+            <Form.Control id="departments" className="erasable" autoComplete="off" />
           </Col>
         </Form.Row>
         <Form.Row className="my-5 justify-content-center">
