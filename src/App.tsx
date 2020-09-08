@@ -100,6 +100,8 @@ function App() {
   const [clickedIndex, setClickedIndex] = useState<number>();
   const [toastShow, setToastShow] = useState<boolean>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
+  const [isCertReadOnly, setIsCertReadOnly] = useState<boolean>(true);
+  const [isSubjectReadOnly, setIsSubjectReadOnly] = useState<boolean>(true);
 
   const positionElement = useRef<HTMLInputElement>(null);
 
@@ -221,11 +223,25 @@ function App() {
           </Col>
           <Col xs={12}>
             <Form.Label>지원가능 자격증</Form.Label>
-            <Form.Control id="certificates" className="erasable" autoComplete="off" />
+            <Form.Control 
+              id="certificates" 
+              className="erasable" 
+              autoComplete="off" 
+              readOnly={isCertReadOnly}
+              tabIndex={isCertReadOnly ? -1 : undefined}
+              onClick={() => setIsCertReadOnly(!isCertReadOnly)}
+            />
           </Col>
           <Col xs={12}>
             <Form.Label>지원가능 학과</Form.Label>
-            <Form.Control id="departments" className="erasable" autoComplete="off" />
+            <Form.Control 
+              id="departments" 
+              className="erasable" 
+              autoComplete="off" 
+              readOnly={isSubjectReadOnly}
+              tabIndex={isSubjectReadOnly ? -1 : undefined}
+              onClick={() => setIsSubjectReadOnly(!isSubjectReadOnly)}
+            />
           </Col>
           <Col xs={12} className="my-3">
             {
@@ -247,7 +263,7 @@ function App() {
               입력
             </Button>
           </Col>
-          <Col xs={3}>
+          <Col xs={3} className="mb-5">
             <Button 
               block
               variant="outline-info" 
