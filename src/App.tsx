@@ -163,17 +163,17 @@ function App() {
   return (
     <Container>
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/gongdb-input">공디비</Navbar.Brand>
+        <Navbar.Brand href="#">공디비</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="/gongdb-input">Form</Nav.Link>
+            <Nav.Link href="#">Form</Nav.Link>
           </Nav>
           <Button 
             variant="outline-info" 
             onClick={() => exportJSON(formData)}
           >
-            다운로드
+            데이터 다운로드
           </Button>
         </Navbar.Collapse>
       </Navbar>
