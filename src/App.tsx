@@ -180,65 +180,65 @@ function App() {
       </Modal>
 
       <Form>
-        <Form.Row className="my-5">
-          <Col xs={12} md={3}>
+        <Form.Row className="form-input">
+          <Col xs={12}>
             <Form.Label>회사명</Form.Label>
             <Form.Control id="companyName" autoComplete="off" />
           </Col>
-          <Col xs={12} md={1}>
+          <Col xs={6}>
             <Form.Label>공고연도</Form.Label>
             <Form.Control id="noticeYear" autoComplete="off" />
           </Col>
-          <Col xs={12} md={1}>
+          <Col xs={6}>
             <Form.Label>차수</Form.Label>
             <Form.Control id="sequence" autoComplete="off" />
           </Col>
-          <Col xs={12} md={2}>
-            <Form.Label>지원가능 어학성적</Form.Label>
-            <Form.Control id="languageScore" autoComplete="off" />
-          </Col>
-          <Col xs={12} md={5}>
+          <Col xs={12}>
             <Form.Label>링크</Form.Label>
             <Form.Control id="link" autoComplete="off" />
           </Col>
-        </Form.Row>
-        <Form.Row className="my-5">
-          <Col xs={12} md={3}>
+          <Col xs={12}>
+            <Form.Label>지원가능 어학성적</Form.Label>
+            <Form.Control id="languageScore" autoComplete="off" />
+          </Col>
+          <Col xs={12} className="mt-3">
+            <hr />
+          </Col>
+          <Col xs={12}>
             <Form.Label>직군</Form.Label>
             <Form.Control id="position" className="erasable" autoComplete="off" ref={positionElement} />
           </Col>
-          <Col xs={12} md={1}>
+          <Col xs={12}>
             <Form.Label>채용인원</Form.Label>
             <Form.Control id="headCount" className="erasable" autoComplete="off" />
           </Col>
-          <Col xs={12} md={8}>
+          <Col xs={12}>
             <Form.Label>과목</Form.Label>
             <Form.Control id="subjects" className="erasable" autoComplete="off" />
           </Col>
-        </Form.Row>
-        <Form.Row className="align-items-center mt-5">
-          <Col xs={12} md={6}>
+          <Col xs={12} className="mt-3">
+            <hr />
+          </Col>
+          <Col xs={12}>
             <Form.Label>지원가능 자격증</Form.Label>
             <Form.Control id="certificates" className="erasable" autoComplete="off" />
           </Col>
-          <Col xs={12} md={6}>
+          <Col xs={12}>
             <Form.Label>지원가능 학과</Form.Label>
             <Form.Control id="departments" className="erasable" autoComplete="off" />
           </Col>
-        </Form.Row>
-        <Form.Row className="my-5 justify-content-center">
-          {
-            ncs.map((value, index) => (
-              <PillCheckbox 
-                key={index}
-                id={`ncs${index}`}
-                label={value}
-              />
-            ))
-          }
-        </Form.Row>
-        <Form.Row className="my-5">
-          <Col xs={12} md={10}>
+          <Col xs={12} className="my-3">
+            {
+              ncs.map((value, index) => (
+                <PillCheckbox 
+                  key={index}
+                  id={`ncs${index}`}
+                  label={value}
+                />
+              ))
+            }
+          </Col>
+          <Col xs={9}>
             <Button 
               block
               variant="info" 
@@ -247,13 +247,13 @@ function App() {
               입력
             </Button>
           </Col>
-          <Col xs={12} md={2}>
+          <Col xs={3}>
             <Button 
               block
               variant="outline-info" 
               onClick={() => exportJSON(formData)}
             >
-              다운로드
+              저장
             </Button>
           </Col>
         </Form.Row>
