@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Alert, Button, Col, Container, Form, Modal, Table } from "react-bootstrap";
-import PillCheckbox from './component/PillCheckbox';
+import { Alert, Button, Col, Container, Form, Modal, Nav, Navbar, Table } from "react-bootstrap";
 import "./App.css";
+import PillCheckbox from './component/PillCheckbox';
 
 interface InputData {
   certificates: string
@@ -162,12 +162,28 @@ function App() {
 
   return (
     <Container>
+      <Navbar bg="light" expand="lg">
+        <Navbar.Brand href="/gongdb-input">공디비</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
+            <Nav.Link href="/gongdb-input">Form</Nav.Link>
+          </Nav>
+          <Button 
+            variant="outline-info" 
+            onClick={() => exportJSON(formData)}
+          >
+            다운로드
+          </Button>
+        </Navbar.Collapse>
+      </Navbar>
+
       <Alert
         variant="success"
         show={toastShow} 
-        style={{position: "absolute", top: 15, right: 15}}
+        style={{position: "fixed", top: 15, right: 15}}
       >
-        정상적으로 입력되었습니다
+        정상적으로 입력되었습니다!
       </Alert>
 
       <Modal show={modalShow} onHide={hideModal} animation={false}>
@@ -182,7 +198,7 @@ function App() {
       </Modal>
 
       <Form>
-        <Form.Row className="form-input">
+        <Form.Row id="input-form">
           <Col xs={12}>
             <Form.Label>회사명</Form.Label>
             <Form.Control id="companyName" autoComplete="off" />
@@ -243,7 +259,7 @@ function App() {
               onClick={() => setIsSubjectReadOnly(!isSubjectReadOnly)}
             />
           </Col>
-          <Col xs={12} className="my-3">
+          <Col xs={12} className="my-4 text-center">
             {
               ncs.map((value, index) => (
                 <PillCheckbox 
@@ -254,22 +270,13 @@ function App() {
               ))
             }
           </Col>
-          <Col xs={9}>
+          <Col xs={12}>
             <Button 
               block
               variant="info" 
               onClick={handleInputClick}
             >
               입력
-            </Button>
-          </Col>
-          <Col xs={3} className="mb-5">
-            <Button 
-              block
-              variant="outline-info" 
-              onClick={() => exportJSON(formData)}
-            >
-              저장
             </Button>
           </Col>
         </Form.Row>
