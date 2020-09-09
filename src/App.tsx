@@ -87,7 +87,7 @@ const convertInputDataToFormData = (inputData: InputData): FormData => {
   };
 };
 
-const exportJSON = (object: any) => {
+const exportJSON = (object: any): void => {
   var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object));
   
   let a = document.createElement("a");
@@ -96,6 +96,10 @@ const exportJSON = (object: any) => {
 
   a.click();
   a.remove();
+};
+
+const saveJSON = (object: any): void => {
+  localStorage.setItem("gongdb-input", JSON.stringify(object));
 };
 
 function App() {
@@ -149,10 +153,12 @@ function App() {
   };
 
   const handleInputClick = (): void => {
-    setFormData([...formData, convertInputDataToFormData(getInputData())]);
+    const data = [...formData, convertInputDataToFormData(getInputData())];
+    setFormData(data);
     clearForm();
     focusOnFirst();
     toastAlert();
+    saveJSON(data);
   };
 
   const removeFormData = (removeIndex: number): void => {
@@ -248,6 +254,7 @@ function App() {
               autoComplete="off" 
               readOnly={isCertReadOnly}
               tabIndex={isCertReadOnly ? -1 : undefined}
+              placeholder={isCertReadOnly ? "활성화하려면 클릭" : undefined}
               onClick={() => setIsCertReadOnly(!isCertReadOnly)}
             />
           </Col>
@@ -259,6 +266,7 @@ function App() {
               autoComplete="off" 
               readOnly={isSubjectReadOnly}
               tabIndex={isSubjectReadOnly ? -1 : undefined}
+              placeholder={isSubjectReadOnly ? "활성화하려면 클릭" : undefined}
               onClick={() => setIsSubjectReadOnly(!isSubjectReadOnly)}
             />
           </Col>
