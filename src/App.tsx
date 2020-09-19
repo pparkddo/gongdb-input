@@ -126,7 +126,7 @@ function App() {
   const [isSubjectReadOnly, setIsSubjectReadOnly] = useState<boolean>(true);
   const [isDistrictsReadOnly, setIsDistrictsReadOnly] = useState<boolean>(true);
 
-  const workingTypeElement = useRef<HTMLInputElement>(null);
+  const positionElement = useRef<HTMLInputElement>(null);
 
   const clearForm = (): void => {
     document.querySelectorAll(".erasable").forEach((element) => {
@@ -142,7 +142,7 @@ function App() {
   };
 
   const focusOnFirst = (): void => {
-    workingTypeElement?.current?.focus();
+    positionElement?.current?.focus();
   };
 
   const getInputData = (): InputData => {
@@ -251,18 +251,19 @@ function App() {
             <Form.Label>지원가능 어학성적</Form.Label>
             <Form.Control id="languageScore" autoComplete="off" />
           </Col>
+
           <Col xs={12} className="mt-3">
             <hr />
           </Col>
+
           <Col xs={6}>
             <Form.Label>근무형태</Form.Label>
-            <Form.Control id="workingType" className="erasable" autoComplete="off" ref={workingTypeElement} />
+            <Form.Control id="workingType" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>채용구분</Form.Label>
             <Form.Control 
               id="recruitType" 
-              className="erasable" 
               autoComplete="off"
               onChange={(event) => event.target.value === "지역" ? setIsDistrictsReadOnly(false) : setIsDistrictsReadOnly(true)}
             />
@@ -271,7 +272,6 @@ function App() {
             <Form.Label>지역</Form.Label>
             <Form.Control 
               id="districts" 
-              className="erasable" 
               autoComplete="off"
               readOnly={isDistrictsReadOnly}
               tabIndex={isDistrictsReadOnly ? -1 : undefined}
@@ -280,16 +280,21 @@ function App() {
           </Col>
           <Col xs={6}>
             <Form.Label>채용수준</Form.Label>
-            <Form.Control id="recruitLevel" className="erasable" autoComplete="off" />
+            <Form.Control id="recruitLevel" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>직급</Form.Label>
             <Form.Control 
-              id="rank" className="erasable" autoComplete="off" />
+              id="rank" autoComplete="off" />
           </Col>
+
+          <Col xs={12} className="mt-3">
+            <hr />
+          </Col>
+
           <Col xs={12}>
             <Form.Label>직군</Form.Label>
-            <Form.Control id="position" className="erasable" autoComplete="off" />
+            <Form.Control id="position" className="erasable" autoComplete="off" ref={positionElement} />
           </Col>
           <Col xs={12}>
             <Form.Label>채용인원</Form.Label>
@@ -299,9 +304,11 @@ function App() {
             <Form.Label>과목</Form.Label>
             <Form.Control id="subjects" className="erasable" autoComplete="off" />
           </Col>
+
           <Col xs={12} className="mt-3">
             <hr />
           </Col>
+
           <Col xs={12}>
             <Form.Label>지원가능 자격증</Form.Label>
             <Form.Control 
