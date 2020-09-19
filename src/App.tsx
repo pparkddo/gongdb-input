@@ -4,6 +4,11 @@ import "./App.css";
 import PillCheckbox from './component/PillCheckbox';
 
 interface InputData {
+  workingType: string
+  recruitType: string
+  districts: string
+  recruitLevel: string
+  rank: string
   certificates: string
   companyName: string
   departments: string
@@ -19,7 +24,7 @@ interface InputData {
   ncs6: boolean 
   ncs7: boolean 
   ncs8: boolean 
-  noticeYear: string
+  announcementTimestamp: string
   position: string
   sequence: string
   subjects: string
@@ -27,6 +32,11 @@ interface InputData {
 }
 
 interface FormData {
+  workingType: string
+  recruitType: string
+  districts: string
+  recruitLevel: string
+  rank: string
   certificates: string
   companyName: string
   departments: string
@@ -34,7 +44,7 @@ interface FormData {
   languageScore: string
   link: string
   ncs: string
-  noticeYear: string
+  announcementTimestamp: string
   position: string
   sequence: string
   subjects: string
@@ -72,6 +82,11 @@ const getNcsValues = (inputData: InputData): string => {
 
 const convertInputDataToFormData = (inputData: InputData): FormData => { 
   return {
+    workingType: inputData.workingType,
+    recruitType: inputData.recruitType,
+    districts: inputData.districts,
+    recruitLevel: inputData.recruitLevel,
+    rank: inputData.rank,
     certificates: inputData.certificates,
     companyName: inputData.companyName,
     departments: inputData.departments, 
@@ -79,7 +94,7 @@ const convertInputDataToFormData = (inputData: InputData): FormData => {
     languageScore: inputData.languageScore,
     link: inputData.link,
     ncs: getNcsValues(inputData),
-    noticeYear: inputData.noticeYear,
+    announcementTimestamp: inputData.announcementTimestamp,
     position: inputData.position,
     sequence: inputData.sequence,
     subjects: inputData.subjects,
@@ -109,8 +124,9 @@ function App() {
   const [modalShow, setModalShow] = useState<boolean>(false);
   const [isCertReadOnly, setIsCertReadOnly] = useState<boolean>(true);
   const [isSubjectReadOnly, setIsSubjectReadOnly] = useState<boolean>(true);
+  const [isDistrictsReadOnly, setIsDistrictsReadOnly] = useState<boolean>(true);
 
-  const positionElement = useRef<HTMLInputElement>(null);
+  const workingTypeElement = useRef<HTMLInputElement>(null);
 
   const clearForm = (): void => {
     document.querySelectorAll(".erasable").forEach((element) => {
@@ -126,7 +142,7 @@ function App() {
   };
 
   const focusOnFirst = (): void => {
-    positionElement?.current?.focus();
+    workingTypeElement?.current?.focus();
   };
 
   const getInputData = (): InputData => {
@@ -151,6 +167,12 @@ function App() {
       setToastShow(false);
     }, 1000);
   };
+  
+  const setReadOnly = (): void => {
+    setIsCertReadOnly(true);
+    setIsSubjectReadOnly(true);
+    setIsDistrictsReadOnly(true);
+  };
 
   const handleInputClick = (): void => {
     const data = [...formData, convertInputDataToFormData(getInputData())];
@@ -158,6 +180,7 @@ function App() {
     clearForm();
     focusOnFirst();
     toastAlert();
+    setReadOnly();
     saveJSON(data);
   };
 
@@ -213,8 +236,8 @@ function App() {
             <Form.Control id="companyName" autoComplete="off" />
           </Col>
           <Col xs={6}>
-            <Form.Label>공고연도</Form.Label>
-            <Form.Control id="noticeYear" autoComplete="off" />
+            <Form.Label>접수일자</Form.Label>
+            <Form.Control id="announcementTimestamp" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>차수</Form.Label>
@@ -231,9 +254,42 @@ function App() {
           <Col xs={12} className="mt-3">
             <hr />
           </Col>
+          <Col xs={6}>
+            <Form.Label>근무형태</Form.Label>
+            <Form.Control id="workingType" className="erasable" autoComplete="off" ref={workingTypeElement} />
+          </Col>
+          <Col xs={6}>
+            <Form.Label>채용구분</Form.Label>
+            <Form.Control 
+              id="recruitType" 
+              className="erasable" 
+              autoComplete="off"
+              onChange={(event) => event.target.value === "지역" ? setIsDistrictsReadOnly(false) : setIsDistrictsReadOnly(true)}
+            />
+          </Col>
+          <Col xs={12}>
+            <Form.Label>지역</Form.Label>
+            <Form.Control 
+              id="districts" 
+              className="erasable" 
+              autoComplete="off"
+              readOnly={isDistrictsReadOnly}
+              tabIndex={isDistrictsReadOnly ? -1 : undefined}
+              placeholder={isDistrictsReadOnly ? "채용구분이 지역일 때 입력" : undefined}
+            />
+          </Col>
+          <Col xs={6}>
+            <Form.Label>채용수준</Form.Label>
+            <Form.Control id="recruitLevel" className="erasable" autoComplete="off" />
+          </Col>
+          <Col xs={6}>
+            <Form.Label>직급</Form.Label>
+            <Form.Control 
+              id="rank" className="erasable" autoComplete="off" />
+          </Col>
           <Col xs={12}>
             <Form.Label>직군</Form.Label>
-            <Form.Control id="position" className="erasable" autoComplete="off" ref={positionElement} />
+            <Form.Control id="position" className="erasable" autoComplete="off" />
           </Col>
           <Col xs={12}>
             <Form.Label>채용인원</Form.Label>
@@ -321,6 +377,11 @@ function App() {
                 <th>어학</th>
                 <th>링크</th>
                 <th>직군</th>
+                <th>근무형태</th>
+                <th>채용구분</th>
+                <th>지역</th>
+                <th>채용수준</th>
+                <th>직급</th>
                 <th>인원</th>
                 <th>과목</th>
                 <th>자격증</th>
@@ -342,11 +403,16 @@ function App() {
                   >
                     <td>{index+1}</td>
                     <td>{value.companyName}</td>
-                    <td>{value.noticeYear}</td>
+                    <td>{value.announcementTimestamp}</td>
                     <td>{value.sequence}</td>
                     <td>{value.languageScore}</td>
                     <td>{value.link}</td>
                     <td>{value.position}</td>
+                    <td>{value.workingType}</td>
+                    <td>{value.recruitType}</td>
+                    <td>{value.districts}</td>
+                    <td>{value.recruitLevel}</td>
+                    <td>{value.rank}</td>
                     <td>{value.headCount}</td>
                     <td>{value.subjects}</td>
                     <td>{value.certificates}</td>
