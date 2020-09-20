@@ -1,58 +1,11 @@
-import React, { useRef, useState } from 'react';
-import { Alert, Button, Col, Container, Form, Modal, Nav, Navbar, Table } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, Col, Container, Form } from "react-bootstrap";
 import "./App.css";
+import Alert from './component/Alert';
+import DataTable from './component/DataTable';
+import Modal from './component/Modal';
+import Navigation from './component/Navigation';
 import PillCheckbox from './component/PillCheckbox';
-
-interface InputData {
-  workingType: string
-  recruitType: string
-  districts: string
-  recruitLevel: string
-  rank: string
-  certificates: string
-  companyName: string
-  departments: string
-  headCount: string
-  languageScore: string
-  perfectLanguageScore: string
-  label: string
-  link: string
-  ncs0: boolean
-  ncs1: boolean
-  ncs2: boolean 
-  ncs3: boolean 
-  ncs4: boolean 
-  ncs5: boolean 
-  ncs6: boolean 
-  ncs7: boolean 
-  ncs8: boolean 
-  announcementTimestamp: string
-  position: string
-  sequence: string
-  subjects: string
-  isEither: boolean
-}
-
-interface FormData {
-  workingType: string
-  recruitType: string
-  districts: string
-  recruitLevel: string
-  rank: string
-  certificates: string
-  companyName: string
-  departments: string
-  headCount: string
-  languageScore: string
-  perfectLanguageScore: string
-  link: string
-  ncs: string
-  announcementTimestamp: string
-  position: string
-  sequence: string
-  subjects: string
-  isEither: boolean
-}
 
 const ncs = [
   "의사소통능력",
@@ -68,41 +21,41 @@ const ncs = [
 
 const SEPARATOR = ",";
 
-const getNcsValues = (inputData: InputData): string => {
+const getNcsValues = (rawInputData: RawInputData): string => {
   const ncsChecked = [
-    inputData.ncs0,
-    inputData.ncs1,
-    inputData.ncs2,
-    inputData.ncs3,
-    inputData.ncs4,
-    inputData.ncs5,
-    inputData.ncs6,
-    inputData.ncs7,
-    inputData.ncs8,
+    rawInputData.ncs0,
+    rawInputData.ncs1,
+    rawInputData.ncs2,
+    rawInputData.ncs3,
+    rawInputData.ncs4,
+    rawInputData.ncs5,
+    rawInputData.ncs6,
+    rawInputData.ncs7,
+    rawInputData.ncs8,
   ];
   return ncs.filter((_, index) => ncsChecked[index]).join(SEPARATOR);
 };
 
-const convertInputDataToFormData = (inputData: InputData): FormData => { 
+const convertRawInputDataToGongdbInputData = (rawInputData: RawInputData): GongdbInputData => { 
   return {
-    workingType: inputData.workingType,
-    recruitType: inputData.recruitType,
-    districts: inputData.districts,
-    recruitLevel: inputData.recruitLevel,
-    rank: inputData.rank,
-    certificates: inputData.certificates,
-    companyName: inputData.companyName,
-    departments: inputData.departments, 
-    headCount: inputData.headCount,
-    languageScore: inputData.languageScore,
-    perfectLanguageScore: inputData.perfectLanguageScore,
-    link: inputData.link,
-    ncs: getNcsValues(inputData),
-    announcementTimestamp: inputData.announcementTimestamp,
-    position: inputData.position,
-    sequence: inputData.sequence,
-    subjects: inputData.subjects,
-    isEither: inputData.isEither
+    workingType: rawInputData.workingType,
+    recruitType: rawInputData.recruitType,
+    districts: rawInputData.districts,
+    recruitLevel: rawInputData.recruitLevel,
+    rank: rawInputData.rank,
+    certificates: rawInputData.certificates,
+    companyName: rawInputData.companyName,
+    departments: rawInputData.departments, 
+    headCount: rawInputData.headCount,
+    languageScore: rawInputData.languageScore,
+    perfectLanguageScore: rawInputData.perfectLanguageScore,
+    link: rawInputData.link,
+    ncs: getNcsValues(rawInputData),
+    announcementTimestamp: rawInputData.announcementTimestamp,
+    position: rawInputData.position,
+    sequence: rawInputData.sequence,
+    subjects: rawInputData.subjects,
+    isEither: rawInputData.isEither
   };
 };
 
@@ -122,7 +75,7 @@ const saveJSON = (object: any): void => {
 };
 
 function App() {
-  const [formData, setFormData] = useState<FormData[]>([]);
+  const [gongdbInputData, setGongdbInputData] = useState<GongdbInputData[]>([]);
   const [clickedIndex, setClickedIndex] = useState<number>();
   const [toastShow, setToastShow] = useState<boolean>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
@@ -148,7 +101,7 @@ function App() {
     recruitTypeElement?.current?.focus();
   };
 
-  const getInputData = (): InputData => {
+  const getRawInputData = (): RawInputData => {
     let value = {};
 
     document.querySelectorAll(".form-control").forEach((element) => {
@@ -161,7 +114,7 @@ function App() {
       value = {...value, [element.id]: isChecked};
     })
 
-    return value as InputData;
+    return value as RawInputData;
   };
 
   const toastAlert = (): void => {
@@ -177,8 +130,8 @@ function App() {
   };
 
   const handleInputClick = (): void => {
-    const data = [...formData, convertInputDataToFormData(getInputData())];
-    setFormData(data);
+    const data = [...gongdbInputData, convertRawInputDataToGongdbInputData(getRawInputData())];
+    setGongdbInputData(data);
     clearForm();
     focusOnFirst();
     toastAlert();
@@ -186,50 +139,31 @@ function App() {
     saveJSON(data);
   };
 
-  const removeFormData = (removeIndex: number): void => {
-    hideModal();
-    setFormData(formData.filter((_, index) => index !== removeIndex));
+  const removeGongdbInputData = (removeIndex: number): void => {
+    setGongdbInputData(gongdbInputData.filter((_, index) => index !== removeIndex));
   };
 
-  const hideModal = () => setModalShow(false);
-  const showModal = () => setModalShow(true);
+  useEffect(() => {
+    if (clickedIndex !== undefined) {
+      setModalShow(true);
+    }
+  }, [clickedIndex]);
 
   return (
     <Container>
-      <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="#">공디비</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
-            <Nav.Link href="#">Form</Nav.Link>
-          </Nav>
-          <Button 
-            variant="outline-info" 
-            onClick={() => exportJSON(formData)}
-          >
-            데이터 다운로드
-          </Button>
-        </Navbar.Collapse>
-      </Navbar>
+      <Navigation onExportButtonClick={() => exportJSON(gongdbInputData)} />
 
-      <Alert
-        variant="success"
-        show={toastShow} 
-        style={{position: "fixed", top: 15, right: 15}}
-      >
-        정상적으로 입력되었습니다!
-      </Alert>
+      <Alert show={toastShow} />
 
-      <Modal show={modalShow} onHide={hideModal} animation={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>데이터 삭제</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{(clickedIndex as number)+1}번 데이터를 삭제하시겠습니까</Modal.Body>
-        <Modal.Footer>
-          <Button variant="light" onClick={hideModal}>취소</Button>
-          <Button variant="danger" onClick={() => removeFormData(clickedIndex as number)}>삭제</Button>
-        </Modal.Footer>
-      </Modal>
+      <Modal 
+        show={modalShow}
+        clickedIndex={clickedIndex as number}
+        onHideButtonClick={() => setModalShow(false)}
+        onRemoveButtonClick={() => {
+          removeGongdbInputData(clickedIndex as number);
+          setModalShow(false);
+        }}
+      />
 
       <Form>
         <Form.Row id="input-form">
@@ -364,67 +298,13 @@ function App() {
           </Col>
         </Form.Row>
       </Form>
+
       {
-        formData.length > 0
-        ? <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>회사명</th>
-                <th>공고연도</th>
-                <th>차수</th>
-                <th>어학</th>
-                <th>어학만점</th>
-                <th>링크</th>
-                <th>직군</th>
-                <th>근무형태</th>
-                <th>채용구분</th>
-                <th>지역</th>
-                <th>채용수준</th>
-                <th>직급</th>
-                <th>인원</th>
-                <th>과목</th>
-                <th>자격증</th>
-                <th>학과</th>
-                <th>NCS</th>
-                <th>둘중하나</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                formData.map((value, index) => (
-                  <tr 
-                    key={index} 
-                    data-key={index} 
-                    onClick={() => {
-                      setClickedIndex(index);
-                      showModal();
-                    }}
-                  >
-                    <td>{index+1}</td>
-                    <td>{value.companyName}</td>
-                    <td>{value.announcementTimestamp}</td>
-                    <td>{value.sequence}</td>
-                    <td>{value.languageScore}</td>
-                    <td>{value.perfectLanguageScore}</td>
-                    <td>{value.link}</td>
-                    <td>{value.position}</td>
-                    <td>{value.workingType}</td>
-                    <td>{value.recruitType}</td>
-                    <td>{value.districts}</td>
-                    <td>{value.recruitLevel}</td>
-                    <td>{value.rank}</td>
-                    <td>{value.headCount}</td>
-                    <td>{value.subjects}</td>
-                    <td>{value.certificates}</td>
-                    <td>{value.departments}</td>
-                    <td>{value.ncs}</td>
-                    <td>{typeof value.isEither === "boolean" ? String(value.isEither) : ""}</td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </Table>
+        gongdbInputData.length > 0 
+        ? <DataTable 
+            data={gongdbInputData} 
+            onRowClick={(index) => setClickedIndex(index)}
+          /> 
         : null
       }
     </Container>
