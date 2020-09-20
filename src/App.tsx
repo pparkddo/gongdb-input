@@ -143,12 +143,6 @@ function App() {
     setGongdbInputData(gongdbInputData.filter((_, index) => index !== removeIndex));
   };
 
-  useEffect(() => {
-    if (clickedIndex !== undefined) {
-      setModalShow(true);
-    }
-  }, [clickedIndex]);
-
   return (
     <Container>
       <Navigation onExportButtonClick={() => exportJSON(gongdbInputData)} />
@@ -303,7 +297,10 @@ function App() {
         gongdbInputData.length > 0 
         ? <DataTable 
             data={gongdbInputData} 
-            onRowClick={(index) => setClickedIndex(index)}
+            onRowClick={(index) => {
+              setClickedIndex(index);
+              setModalShow(true);
+            }}
           /> 
         : null
       }
