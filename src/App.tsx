@@ -14,6 +14,8 @@ interface InputData {
   departments: string
   headCount: string
   languageScore: string
+  perfectLanguageScore: string
+  label: string
   link: string
   ncs0: boolean
   ncs1: boolean
@@ -42,6 +44,7 @@ interface FormData {
   departments: string
   headCount: string
   languageScore: string
+  perfectLanguageScore: string
   link: string
   ncs: string
   announcementTimestamp: string
@@ -92,6 +95,7 @@ const convertInputDataToFormData = (inputData: InputData): FormData => {
     departments: inputData.departments, 
     headCount: inputData.headCount,
     languageScore: inputData.languageScore,
+    perfectLanguageScore: inputData.perfectLanguageScore,
     link: inputData.link,
     ncs: getNcsValues(inputData),
     announcementTimestamp: inputData.announcementTimestamp,
@@ -124,9 +128,8 @@ function App() {
   const [modalShow, setModalShow] = useState<boolean>(false);
   const [isCertReadOnly, setIsCertReadOnly] = useState<boolean>(true);
   const [isSubjectReadOnly, setIsSubjectReadOnly] = useState<boolean>(true);
-  const [isDistrictsReadOnly, setIsDistrictsReadOnly] = useState<boolean>(true);
 
-  const positionElement = useRef<HTMLInputElement>(null);
+  const recruitTypeElement = useRef<HTMLInputElement>(null);
 
   const clearForm = (): void => {
     document.querySelectorAll(".erasable").forEach((element) => {
@@ -142,7 +145,7 @@ function App() {
   };
 
   const focusOnFirst = (): void => {
-    positionElement?.current?.focus();
+    recruitTypeElement?.current?.focus();
   };
 
   const getInputData = (): InputData => {
@@ -171,7 +174,6 @@ function App() {
   const setReadOnly = (): void => {
     setIsCertReadOnly(true);
     setIsSubjectReadOnly(true);
-    setIsDistrictsReadOnly(true);
   };
 
   const handleInputClick = (): void => {
@@ -247,9 +249,13 @@ function App() {
             <Form.Label>링크</Form.Label>
             <Form.Control id="link" autoComplete="off" />
           </Col>
-          <Col xs={12}>
+          <Col xs={6}>
             <Form.Label>지원가능 어학성적</Form.Label>
             <Form.Control id="languageScore" autoComplete="off" />
+          </Col>
+          <Col xs={6}>
+            <Form.Label>어학성적 만점기준</Form.Label>
+            <Form.Control id="perfectLanguageScore" autoComplete="off" />
           </Col>
 
           <Col xs={12} className="mt-3">
@@ -261,22 +267,8 @@ function App() {
             <Form.Control id="workingType" autoComplete="off" />
           </Col>
           <Col xs={6}>
-            <Form.Label>채용구분</Form.Label>
-            <Form.Control 
-              id="recruitType" 
-              autoComplete="off"
-              onChange={(event) => event.target.value === "지역" ? setIsDistrictsReadOnly(false) : setIsDistrictsReadOnly(true)}
-            />
-          </Col>
-          <Col xs={12}>
-            <Form.Label>지역</Form.Label>
-            <Form.Control 
-              id="districts" 
-              autoComplete="off"
-              readOnly={isDistrictsReadOnly}
-              tabIndex={isDistrictsReadOnly ? -1 : undefined}
-              placeholder={isDistrictsReadOnly ? "채용구분이 지역일 때 입력" : undefined}
-            />
+            <Form.Label>직군</Form.Label>
+            <Form.Control id="position" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>채용수준</Form.Label>
@@ -293,12 +285,12 @@ function App() {
           </Col>
 
           <Col xs={12}>
-            <Form.Label>직군</Form.Label>
-            <Form.Control id="position" className="erasable" autoComplete="off" ref={positionElement} />
+            <Form.Label>채용구분</Form.Label>
+            <Form.Control id="recruitType" className="erasable" autoComplete="off" ref={recruitTypeElement} />
           </Col>
           <Col xs={12}>
-            <Form.Label>채용인원</Form.Label>
-            <Form.Control id="headCount" className="erasable" autoComplete="off" />
+            <Form.Label>지역별</Form.Label>
+            <Form.Control id="districts" className="erasable" autoComplete="off" />
           </Col>
           <Col xs={12}>
             <Form.Label>과목</Form.Label>
@@ -382,6 +374,7 @@ function App() {
                 <th>공고연도</th>
                 <th>차수</th>
                 <th>어학</th>
+                <th>어학만점</th>
                 <th>링크</th>
                 <th>직군</th>
                 <th>근무형태</th>
@@ -413,6 +406,7 @@ function App() {
                     <td>{value.announcementTimestamp}</td>
                     <td>{value.sequence}</td>
                     <td>{value.languageScore}</td>
+                    <td>{value.perfectLanguageScore}</td>
                     <td>{value.link}</td>
                     <td>{value.position}</td>
                     <td>{value.workingType}</td>
