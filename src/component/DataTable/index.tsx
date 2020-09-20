@@ -24,7 +24,6 @@ const DataTable = (props: Props) => {
           <th>지역</th>
           <th>채용수준</th>
           <th>직급</th>
-          <th>인원</th>
           <th>과목</th>
           <th>자격증</th>
           <th>학과</th>
@@ -53,11 +52,10 @@ const DataTable = (props: Props) => {
               <td>{value.districts}</td>
               <td>{value.recruitLevel}</td>
               <td>{value.rank}</td>
-              <td>{value.headCount}</td>
               <td>{value.subjects}</td>
               <td>{value.certificates}</td>
               <td>{value.departments}</td>
-              <td>{value.ncs}</td>
+              <td>{String(value.ncs)}</td>
               <td>{typeof value.isEither === "boolean" ? String(value.isEither) : ""}</td>
             </tr>
           )).reverse()

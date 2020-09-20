@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, Col, Container, Form } from "react-bootstrap";
 import "./App.css";
 import Alert from './component/Alert';
@@ -18,46 +18,6 @@ const ncs = [
   "직무수행능력",
   "전공능력",
 ];
-
-const SEPARATOR = ",";
-
-const getNcsValues = (rawInputData: RawInputData): string => {
-  const ncsChecked = [
-    rawInputData.ncs0,
-    rawInputData.ncs1,
-    rawInputData.ncs2,
-    rawInputData.ncs3,
-    rawInputData.ncs4,
-    rawInputData.ncs5,
-    rawInputData.ncs6,
-    rawInputData.ncs7,
-    rawInputData.ncs8,
-  ];
-  return ncs.filter((_, index) => ncsChecked[index]).join(SEPARATOR);
-};
-
-const convertRawInputDataToGongdbInputData = (rawInputData: RawInputData): GongdbInputData => { 
-  return {
-    workingType: rawInputData.workingType,
-    recruitType: rawInputData.recruitType,
-    districts: rawInputData.districts,
-    recruitLevel: rawInputData.recruitLevel,
-    rank: rawInputData.rank,
-    certificates: rawInputData.certificates,
-    companyName: rawInputData.companyName,
-    departments: rawInputData.departments, 
-    headCount: rawInputData.headCount,
-    languageScore: rawInputData.languageScore,
-    perfectLanguageScore: rawInputData.perfectLanguageScore,
-    link: rawInputData.link,
-    ncs: getNcsValues(rawInputData),
-    announcementTimestamp: rawInputData.announcementTimestamp,
-    position: rawInputData.position,
-    sequence: rawInputData.sequence,
-    subjects: rawInputData.subjects,
-    isEither: rawInputData.isEither
-  };
-};
 
 const exportJSON = (object: any): void => {
   var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object));
@@ -101,20 +61,42 @@ function App() {
     recruitTypeElement?.current?.focus();
   };
 
-  const getRawInputData = (): RawInputData => {
-    let value = {};
+  const getGongdbInputData = (): GongdbInputData => {
+    let value = {} as GongdbInputData;
 
     document.querySelectorAll(".form-control").forEach((element) => {
+      const name = element.attributes.getNamedItem("name")?.value as string;
       const inputValue = (element as HTMLInputElement).value;
-      value = {...value, [element.id]: inputValue};
-    })
+      if (name in value) {
+        if (Array.isArray(value[name])) {
+          value = {...value, [name]: [...value[name] as string[], inputValue]};
+        }
+        else {
+          value = {...value, [name]: [value[name] as string, inputValue]};
+        }
+      }
+      else {
+        value = {...value, [name]: inputValue};
+      }
+    });
     
     document.querySelectorAll(".form-check-input").forEach((element) => {
+      const name = element.attributes.getNamedItem("name")?.value as string;
       const isChecked = (element as HTMLInputElement).checked;
-      value = {...value, [element.id]: isChecked};
-    })
+      if (name in value) {
+        if (Array.isArray(value[name])) {
+          value = {...value, [name]: [...value[name] as boolean[], isChecked]};
+        }
+        else {
+          value = {...value, [name]: [value[name] as boolean, isChecked]};
+        }
+      }
+      else {
+        value = {...value, [name]: isChecked};
+      }
+    });
 
-    return value as RawInputData;
+    return value;
   };
 
   const toastAlert = (): void => {
@@ -130,7 +112,7 @@ function App() {
   };
 
   const handleInputClick = (): void => {
-    const data = [...gongdbInputData, convertRawInputDataToGongdbInputData(getRawInputData())];
+    const data = [...gongdbInputData, getGongdbInputData()];
     setGongdbInputData(data);
     clearForm();
     focusOnFirst();
@@ -141,6 +123,9 @@ function App() {
 
   const removeGongdbInputData = (removeIndex: number): void => {
     setGongdbInputData(gongdbInputData.filter((_, index) => index !== removeIndex));
+  };
+
+  const loadDataToForm = (data: GongdbInputData) => {
   };
 
   return (
@@ -163,27 +148,27 @@ function App() {
         <Form.Row id="input-form">
           <Col xs={12}>
             <Form.Label>회사명</Form.Label>
-            <Form.Control id="companyName" autoComplete="off" />
+            <Form.Control name="companyName" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>접수일자</Form.Label>
-            <Form.Control id="announcementTimestamp" autoComplete="off" />
+            <Form.Control name="announcementTimestamp" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>차수</Form.Label>
-            <Form.Control id="sequence" autoComplete="off" />
+            <Form.Control name="sequence" autoComplete="off" />
           </Col>
           <Col xs={12}>
             <Form.Label>링크</Form.Label>
-            <Form.Control id="link" autoComplete="off" />
+            <Form.Control name="link" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>지원가능 어학성적</Form.Label>
-            <Form.Control id="languageScore" autoComplete="off" />
+            <Form.Control name="languageScore" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>어학성적 만점기준</Form.Label>
-            <Form.Control id="perfectLanguageScore" autoComplete="off" />
+            <Form.Control name="perfectLanguageScore" autoComplete="off" />
           </Col>
 
           <Col xs={12} className="mt-3">
@@ -192,20 +177,19 @@ function App() {
 
           <Col xs={6}>
             <Form.Label>근무형태</Form.Label>
-            <Form.Control id="workingType" autoComplete="off" />
+            <Form.Control name="workingType" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>직군</Form.Label>
-            <Form.Control id="position" autoComplete="off" />
+            <Form.Control name="position" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>채용수준</Form.Label>
-            <Form.Control id="recruitLevel" autoComplete="off" />
+            <Form.Control name="recruitLevel" autoComplete="off" />
           </Col>
           <Col xs={6}>
             <Form.Label>직급</Form.Label>
-            <Form.Control 
-              id="rank" autoComplete="off" />
+            <Form.Control name="rank" autoComplete="off" />
           </Col>
 
           <Col xs={12} className="mt-3">
@@ -214,15 +198,15 @@ function App() {
 
           <Col xs={12}>
             <Form.Label>채용구분</Form.Label>
-            <Form.Control id="recruitType" className="erasable" autoComplete="off" ref={recruitTypeElement} />
+            <Form.Control name="recruitType" className="erasable" autoComplete="off" ref={recruitTypeElement} />
           </Col>
           <Col xs={12}>
             <Form.Label>지역별</Form.Label>
-            <Form.Control id="districts" className="erasable" autoComplete="off" />
+            <Form.Control name="districts" className="erasable" autoComplete="off" />
           </Col>
           <Col xs={12}>
             <Form.Label>과목</Form.Label>
-            <Form.Control id="subjects" className="erasable" autoComplete="off" />
+            <Form.Control name="subjects" className="erasable" autoComplete="off" />
           </Col>
 
           <Col xs={12} className="mt-3">
@@ -232,7 +216,7 @@ function App() {
           <Col xs={12}>
             <Form.Label>지원가능 자격증</Form.Label>
             <Form.Control 
-              id="certificates" 
+              name="certificates" 
               className="erasable" 
               autoComplete="off" 
               readOnly={isCertReadOnly}
@@ -244,7 +228,7 @@ function App() {
           <Col xs={12}>
             <Form.Label>지원가능 학과</Form.Label>
             <Form.Control 
-              id="departments" 
+              name="departments" 
               className="erasable" 
               autoComplete="off" 
               readOnly={isSubjectReadOnly}
@@ -259,7 +243,7 @@ function App() {
                 <Form.Check 
                   inline 
                   type="checkbox" 
-                  id="isEither"
+                  name="isEither"
                   label="둘 중 하나만 만족하면 돼요" 
                   onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
                     if (event.key === "Enter") {
@@ -275,7 +259,7 @@ function App() {
               ncs.map((value, index) => (
                 <PillCheckbox 
                   key={index}
-                  id={`ncs${index}`}
+                  name="ncs"
                   label={value}
                 />
               ))
@@ -304,6 +288,11 @@ function App() {
           /> 
         : null
       }
+
+      <div 
+        style={{position: "fixed", width: 50, height: 50, bottom: 10, right: 10, backgroundColor: "#e07d35", borderRadius: 50}}
+        onClick={() => console.log(gongdbInputData.slice(-1))}
+      />
     </Container>
   );
 };

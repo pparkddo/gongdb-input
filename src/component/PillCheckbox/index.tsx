@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import "./pill-checkbox.css";
 
 interface Props {
-  id: string
+  name: string
   label: string
 }
 
@@ -27,7 +27,7 @@ const PillCheckbox = (props: Props) => {
       style={{backgroundColor: getBackgroundColor(isChecked, isFocused)}}
     >
       <Form.Check 
-        id={props.id}
+        name={props.name}
         type="checkbox" 
         className="position-absolute" 
         value={props.label}
