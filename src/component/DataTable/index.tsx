@@ -60,7 +60,7 @@ const DataTable = (props: Props) => {
               <td>{value.ncs}</td>
               <td>{typeof value.isEither === "boolean" ? String(value.isEither) : ""}</td>
             </tr>
-          ))
+          )).reverse()
         }
       </tbody>
     </Table>
