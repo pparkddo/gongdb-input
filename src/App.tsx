@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form } from "react-bootstrap";
 import "./App.css";
 import Alert from './component/Alert';
@@ -40,9 +40,27 @@ function App() {
   const [toastShow, setToastShow] = useState<boolean>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
   const [isCertReadOnly, setIsCertReadOnly] = useState<boolean>(true);
-  const [isSubjectReadOnly, setIsSubjectReadOnly] = useState<boolean>(true);
+  const [isDepartmentReadOnly, setIsDepartmentReadOnly] = useState<boolean>(true);
 
   const recruitTypeElement = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isCertReadOnly || isDepartmentReadOnly) {
+      (document.getElementsByName("isEither")[0] as HTMLInputElement).checked = false;
+    }
+  }, [isCertReadOnly, isDepartmentReadOnly])
+
+  useEffect(() => {
+    if (isCertReadOnly) {
+      (document.getElementsByName("certificates")[0] as HTMLInputElement).value = "";
+    }
+  }, [isCertReadOnly])
+
+  useEffect(() => {
+    if (isDepartmentReadOnly) {
+      (document.getElementsByName("departments")[0] as HTMLInputElement).value = "";
+    }
+  }, [isDepartmentReadOnly])
 
   const clearForm = (): void => {
     document.querySelectorAll(".erasable").forEach((element) => {
@@ -108,7 +126,7 @@ function App() {
   
   const setReadOnly = (): void => {
     setIsCertReadOnly(true);
-    setIsSubjectReadOnly(true);
+    setIsDepartmentReadOnly(true);
   };
 
   const handleInputClick = (): void => {
@@ -126,6 +144,36 @@ function App() {
   };
 
   const loadDataToForm = (data: GongdbInputData) => {
+    (document.getElementsByName("companyName")[0] as HTMLInputElement).value = data.companyName;
+    (document.getElementsByName("announcementTimestamp")[0] as HTMLInputElement).value = data.announcementTimestamp;
+    (document.getElementsByName("sequence")[0] as HTMLInputElement).value = data.sequence;
+    (document.getElementsByName("link")[0] as HTMLInputElement).value = data.link;
+    (document.getElementsByName("languageScore")[0] as HTMLInputElement).value = data.languageScore;
+    (document.getElementsByName("perfectLanguageScore")[0] as HTMLInputElement).value = data.perfectLanguageScore;
+
+    (document.getElementsByName("workingType")[0] as HTMLInputElement).value = data.workingType;
+    (document.getElementsByName("position")[0] as HTMLInputElement).value = data.position;
+    (document.getElementsByName("recruitLevel")[0] as HTMLInputElement).value = data.recruitLevel;
+    (document.getElementsByName("rank")[0] as HTMLInputElement).value = data.rank;
+
+    (document.getElementsByName("recruitType")[0] as HTMLInputElement).value = data.recruitType;
+    (document.getElementsByName("districts")[0] as HTMLInputElement).value = data.districts;
+    (document.getElementsByName("subjects")[0] as HTMLInputElement).value = data.subjects;
+
+    if (data.certificates) {
+      setIsCertReadOnly(false);
+    }
+    (document.getElementsByName("certificates")[0] as HTMLInputElement).value = data.certificates;
+    if (data.departments) {
+      setIsDepartmentReadOnly(false);
+    }
+    (document.getElementsByName("departments")[0] as HTMLInputElement).value = data.departments;
+
+    (document.getElementsByName("isEither")[0] as HTMLInputElement).checked = data.isEither;
+
+    document.getElementsByName("ncs").forEach((element, key) => {
+      (element as HTMLInputElement).checked = data.ncs[key];
+    });
   };
 
   return (
@@ -231,36 +279,33 @@ function App() {
               name="departments" 
               className="erasable" 
               autoComplete="off" 
-              readOnly={isSubjectReadOnly}
-              tabIndex={isSubjectReadOnly ? -1 : undefined}
-              placeholder={isSubjectReadOnly ? "활성화하려면 클릭" : undefined}
-              onClick={() => setIsSubjectReadOnly(!isSubjectReadOnly)}
+              readOnly={isDepartmentReadOnly}
+              tabIndex={isDepartmentReadOnly ? -1 : undefined}
+              placeholder={isDepartmentReadOnly ? "활성화하려면 클릭" : undefined}
+              onClick={() => setIsDepartmentReadOnly(!isDepartmentReadOnly)}
             />
           </Col>
-          {
-            !isCertReadOnly && !isSubjectReadOnly
-            ? <Col xs={12} className="mt-3 text-right">
-                <Form.Check 
-                  inline 
-                  type="checkbox" 
-                  name="isEither"
-                  label="둘 중 하나만 만족하면 돼요" 
-                  onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                    if (event.key === "Enter") {
-                      event.currentTarget.checked = !event.currentTarget.checked
-                    }
-                  }}
-                />
-              </Col>
-            : null
-          }
+          <Col xs={12} className="mt-3 text-right">
+            <Form.Check 
+              inline 
+              style={{display: !isCertReadOnly && !isDepartmentReadOnly ? "unset" : "none"}}
+              type="checkbox" 
+              name="isEither"
+              label="둘 중 하나만 만족하면 돼요" 
+              onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
+                if (event.key === "Enter") {
+                  event.currentTarget.checked = !event.currentTarget.checked
+                }
+              }}
+            />
+          </Col>
           <Col xs={12} className="my-4 text-center">
             {
               ncs.map((value, index) => (
                 <PillCheckbox 
-                  key={index}
                   name="ncs"
                   label={value}
+                  key={index}
                 />
               ))
             }
@@ -291,7 +336,7 @@ function App() {
 
       <div 
         style={{position: "fixed", width: 50, height: 50, bottom: 10, right: 10, backgroundColor: "#e07d35", borderRadius: 50}}
-        onClick={() => console.log(gongdbInputData.slice(-1))}
+        onClick={() => gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}}
       />
     </Container>
   );
