@@ -7,15 +7,8 @@ interface Props {
   label: string
 }
 
-const getBackgroundColor = (isChecked: boolean, isFocused: boolean): string => {
-  if (isFocused) {
-    return "#158b9f";
-  }
-  if (isChecked) {
-    return "#14a4be";
-  }
-  return "#ffffff";
-}
+const accentColor = "#14a4be";
+const secondaryColor = "#ffffff";
 
 const PillCheckbox = (props: Props) => {
   const [isChecked, setChecked] = useState<boolean>(false);
@@ -24,7 +17,10 @@ const PillCheckbox = (props: Props) => {
   return (
     <label 
       className="pill-checkbox" 
-      style={{backgroundColor: getBackgroundColor(isChecked, isFocused)}}
+      style={{
+        backgroundColor: isChecked ? accentColor : secondaryColor,
+        borderColor: isFocused ? accentColor : "#e0e0e0"
+      }}
     >
       <Form.Check 
         name={props.name}

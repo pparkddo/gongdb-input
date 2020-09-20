@@ -3,7 +3,6 @@
     padding: 7px 12px;
     border-radius: 25px;
     border: solid 1px;
-    border-color: #e0e0e0;
 }
 
 .pill-checkbox input[type="checkbox"] {
@@ -16,9 +15,5 @@
 }
 
 .pill-checkbox .checked {
-    color: #ffffff;
-}
-
-.pill-checkbox .focused {
     color: #ffffff;
 }
