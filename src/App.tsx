@@ -172,7 +172,9 @@ function App() {
     (document.getElementsByName("isEither")[0] as HTMLInputElement).checked = data.isEither;
 
     document.getElementsByName("ncs").forEach((element, key) => {
-      (element as HTMLInputElement).checked = data.ncs[key];
+      if ((element as HTMLInputElement).checked !== data.ncs[key]) {
+        element.click();
+      }
     });
   };
 
