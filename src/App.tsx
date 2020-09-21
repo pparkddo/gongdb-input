@@ -337,7 +337,17 @@ function App() {
       }
 
       <div 
-        style={{position: "fixed", width: 50, height: 50, bottom: 10, right: 10, backgroundColor: "#e07d35", borderRadius: 50}}
+        style={{
+          position: "fixed", 
+          width: 50, 
+          height: 50, 
+          bottom: 20, 
+          right: 20, 
+          backgroundColor: "#17a2b8", 
+          borderRadius: 50, 
+          boxShadow: "0 6px 10px 0 #666", 
+          transition: "all 0.1s ease-in-out"
+        }}
         onClick={() => gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}}
       />
     </Container>
