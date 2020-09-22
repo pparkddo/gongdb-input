@@ -3,6 +3,7 @@ import { Button, Col, Container, Form } from "react-bootstrap";
 import "./App.css";
 import Alert from './component/Alert';
 import DataTable from './component/DataTable';
+import FixedButton from './component/FixedButton';
 import Modal from './component/Modal';
 import Navigation from './component/Navigation';
 import PillCheckbox from './component/PillCheckbox';
@@ -182,7 +183,7 @@ function App() {
     <Container>
       <Navigation onExportButtonClick={() => exportJSON(gongdbInputData)} />
 
-      <Alert show={toastShow} />
+      <Alert show={toastShow} title="정상적으로 입력되었습니다!" />
 
       <Modal 
         show={modalShow}
@@ -251,7 +252,7 @@ function App() {
             <Form.Control name="recruitType" className="erasable" autoComplete="off" ref={recruitTypeElement} />
           </Col>
           <Col xs={12}>
-            <Form.Label>지역별</Form.Label>
+            <Form.Label>지역</Form.Label>
             <Form.Control name="districts" className="erasable" autoComplete="off" />
           </Col>
           <Col xs={12}>
@@ -336,20 +337,8 @@ function App() {
         : null
       }
 
-      <div 
-        style={{
-          position: "fixed", 
-          width: 50, 
-          height: 50, 
-          bottom: 20, 
-          right: 20, 
-          backgroundColor: "#17a2b8", 
-          borderRadius: 50, 
-          boxShadow: "0 6px 10px 0 #666", 
-          transition: "all 0.1s ease-in-out"
-        }}
-        onClick={() => gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}}
-      />
+      <FixedButton onClick={() => gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}} />
+
     </Container>
   );
 };
