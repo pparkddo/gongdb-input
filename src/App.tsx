@@ -35,6 +35,8 @@ const saveJSON = (object: any): void => {
   localStorage.setItem("gongdb-input", JSON.stringify(object));
 };
 
+type Mode = "FORM" | "DATA";
+
 function App() {
   const [gongdbInputData, setGongdbInputData] = useState<GongdbInputData[]>([]);
   const [clickedIndex, setClickedIndex] = useState<number>();
@@ -42,6 +44,7 @@ function App() {
   const [modalShow, setModalShow] = useState<boolean>(false);
   const [isCertReadOnly, setIsCertReadOnly] = useState<boolean>(true);
   const [isDepartmentReadOnly, setIsDepartmentReadOnly] = useState<boolean>(true);
+  const [mode, setMode] = useState<Mode>("FORM");
 
   const recruitTypeElement = useRef<HTMLInputElement>(null);
 
@@ -181,7 +184,11 @@ function App() {
 
   return (
     <>
-      <Navigation onExportButtonClick={() => exportJSON(gongdbInputData)} />
+      <Navigation 
+        onFormLinkClick={() => setMode("FORM")}
+        onDataLInkClick={() => setMode("DATA")}
+        onExportButtonClick={() => exportJSON(gongdbInputData)} 
+      />
       <Container fluid>
         <Alert show={toastShow} title="정상적으로 입력되었습니다!" />
 
@@ -195,149 +202,154 @@ function App() {
           }}
         />
 
-        <Form>
-          <Form.Row id="input-form">
-            <Col xs={12}>
-              <Form.Label>회사명</Form.Label>
-              <Form.Control name="companyName" autoComplete="off" />
-            </Col>
-            <Col xs={6}>
-              <Form.Label>접수일자</Form.Label>
-              <Form.Control name="announcementTimestamp" autoComplete="off" />
-            </Col>
-            <Col xs={6}>
-              <Form.Label>차수</Form.Label>
-              <Form.Control name="sequence" autoComplete="off" />
-            </Col>
-            <Col xs={12}>
-              <Form.Label>링크</Form.Label>
-              <Form.Control name="link" autoComplete="off" />
-            </Col>
-            <Col xs={6}>
-              <Form.Label>지원가능 어학성적</Form.Label>
-              <Form.Control name="languageScore" autoComplete="off" />
-            </Col>
-            <Col xs={6}>
-              <Form.Label>어학성적 만점기준</Form.Label>
-              <Form.Control name="perfectLanguageScore" autoComplete="off" />
-            </Col>
-
-            <Col xs={12} className="mt-3">
-              <hr />
-            </Col>
-
-            <Col xs={6}>
-              <Form.Label>근무형태</Form.Label>
-              <Form.Control name="workingType" autoComplete="off" />
-            </Col>
-            <Col xs={6}>
-              <Form.Label>직군</Form.Label>
-              <Form.Control name="position" autoComplete="off" />
-            </Col>
-            <Col xs={6}>
-              <Form.Label>채용수준</Form.Label>
-              <Form.Control name="recruitLevel" autoComplete="off" />
-            </Col>
-            <Col xs={6}>
-              <Form.Label>직급</Form.Label>
-              <Form.Control name="rank" autoComplete="off" />
-            </Col>
-
-            <Col xs={12} className="mt-3">
-              <hr />
-            </Col>
-
-            <Col xs={12}>
-              <Form.Label>채용구분</Form.Label>
-              <Form.Control name="recruitType" className="erasable" autoComplete="off" ref={recruitTypeElement} />
-            </Col>
-            <Col xs={12}>
-              <Form.Label>지역</Form.Label>
-              <Form.Control name="districts" className="erasable" autoComplete="off" />
-            </Col>
-            <Col xs={12}>
-              <Form.Label>과목</Form.Label>
-              <Form.Control name="subjects" className="erasable" autoComplete="off" />
-            </Col>
-
-            <Col xs={12} className="mt-3">
-              <hr />
-            </Col>
-
-            <Col xs={12}>
-              <Form.Label>지원가능 자격증</Form.Label>
-              <Form.Control 
-                name="certificates" 
-                className="erasable" 
-                autoComplete="off" 
-                readOnly={isCertReadOnly}
-                tabIndex={isCertReadOnly ? -1 : undefined}
-                placeholder={isCertReadOnly ? "활성화하려면 클릭" : undefined}
-                onClick={() => setIsCertReadOnly(!isCertReadOnly)}
-              />
-            </Col>
-            <Col xs={12}>
-              <Form.Label>지원가능 학과</Form.Label>
-              <Form.Control 
-                name="departments" 
-                className="erasable" 
-                autoComplete="off" 
-                readOnly={isDepartmentReadOnly}
-                tabIndex={isDepartmentReadOnly ? -1 : undefined}
-                placeholder={isDepartmentReadOnly ? "활성화하려면 클릭" : undefined}
-                onClick={() => setIsDepartmentReadOnly(!isDepartmentReadOnly)}
-              />
-            </Col>
-            <Col xs={12} className="mt-3 text-right">
-              <Form.Check 
-                inline 
-                style={{display: !isCertReadOnly && !isDepartmentReadOnly ? "unset" : "none"}}
-                type="checkbox" 
-                name="isEither"
-                label="둘 중 하나만 만족하면 돼요" 
-                onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (event.key === "Enter") {
-                    event.currentTarget.checked = !event.currentTarget.checked
-                  }
-                }}
-              />
-            </Col>
-            <Col xs={12} className="my-4 text-center">
-              {
-                ncs.map((value, index) => (
-                  <PillCheckbox 
-                    name="ncs"
-                    label={value}
-                    key={index}
-                  />
-                ))
-              }
-            </Col>
-            <Col xs={12}>
-              <Button 
-                block
-                variant="info" 
-                onClick={handleInputClick}
-              >
-                입력
-              </Button>
-            </Col>
-          </Form.Row>
-        </Form>
-
         {
-          gongdbInputData.length > 0 
-          ? <DataTable 
-              data={gongdbInputData} 
-              onRowClick={(index) => {
-                setClickedIndex(index);
-                setModalShow(true);
-              }}
-            /> 
-          : null
+          mode === "FORM"
+          ? <Form>
+              <Form.Row id="input-form">
+                <Col xs={12}>
+                  <Form.Label>회사명</Form.Label>
+                  <Form.Control name="companyName" autoComplete="off" />
+                </Col>
+                <Col xs={6}>
+                  <Form.Label>접수일자</Form.Label>
+                  <Form.Control name="announcementTimestamp" autoComplete="off" />
+                </Col>
+                <Col xs={6}>
+                  <Form.Label>차수</Form.Label>
+                  <Form.Control name="sequence" autoComplete="off" />
+                </Col>
+                <Col xs={12}>
+                  <Form.Label>링크</Form.Label>
+                  <Form.Control name="link" autoComplete="off" />
+                </Col>
+                <Col xs={6}>
+                  <Form.Label>지원가능 어학성적</Form.Label>
+                  <Form.Control name="languageScore" autoComplete="off" />
+                </Col>
+                <Col xs={6}>
+                  <Form.Label>어학성적 만점기준</Form.Label>
+                  <Form.Control name="perfectLanguageScore" autoComplete="off" />
+                </Col>
+
+                <Col xs={12} className="mt-3">
+                  <hr />
+                </Col>
+
+                <Col xs={6}>
+                  <Form.Label>근무형태</Form.Label>
+                  <Form.Control name="workingType" autoComplete="off" />
+                </Col>
+                <Col xs={6}>
+                  <Form.Label>직군</Form.Label>
+                  <Form.Control name="position" autoComplete="off" />
+                </Col>
+                <Col xs={6}>
+                  <Form.Label>채용수준</Form.Label>
+                  <Form.Control name="recruitLevel" autoComplete="off" />
+                </Col>
+                <Col xs={6}>
+                  <Form.Label>직급</Form.Label>
+                  <Form.Control name="rank" autoComplete="off" />
+                </Col>
+
+                <Col xs={12} className="mt-3">
+                  <hr />
+                </Col>
+
+                <Col xs={12}>
+                  <Form.Label>채용구분</Form.Label>
+                  <Form.Control name="recruitType" className="erasable" autoComplete="off" ref={recruitTypeElement} />
+                </Col>
+                <Col xs={12}>
+                  <Form.Label>지역</Form.Label>
+                  <Form.Control name="districts" className="erasable" autoComplete="off" />
+                </Col>
+                <Col xs={12}>
+                  <Form.Label>과목</Form.Label>
+                  <Form.Control name="subjects" className="erasable" autoComplete="off" />
+                </Col>
+
+                <Col xs={12} className="mt-3">
+                  <hr />
+                </Col>
+
+                <Col xs={12}>
+                  <Form.Label>지원가능 자격증</Form.Label>
+                  <Form.Control 
+                    name="certificates" 
+                    className="erasable" 
+                    autoComplete="off" 
+                    readOnly={isCertReadOnly}
+                    tabIndex={isCertReadOnly ? -1 : undefined}
+                    placeholder={isCertReadOnly ? "활성화하려면 클릭" : undefined}
+                    onClick={() => setIsCertReadOnly(!isCertReadOnly)}
+                  />
+                </Col>
+                <Col xs={12}>
+                  <Form.Label>지원가능 학과</Form.Label>
+                  <Form.Control 
+                    name="departments" 
+                    className="erasable" 
+                    autoComplete="off" 
+                    readOnly={isDepartmentReadOnly}
+                    tabIndex={isDepartmentReadOnly ? -1 : undefined}
+                    placeholder={isDepartmentReadOnly ? "활성화하려면 클릭" : undefined}
+                    onClick={() => setIsDepartmentReadOnly(!isDepartmentReadOnly)}
+                  />
+                </Col>
+                <Col xs={12} className="mt-3 text-right">
+                  <Form.Check 
+                    inline 
+                    style={{display: !isCertReadOnly && !isDepartmentReadOnly ? "unset" : "none"}}
+                    type="checkbox" 
+                    name="isEither"
+                    label="둘 중 하나만 만족하면 돼요" 
+                    onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
+                      if (event.key === "Enter") {
+                        event.currentTarget.checked = !event.currentTarget.checked
+                      }
+                    }}
+                  />
+                </Col>
+                <Col xs={12} className="my-4 text-center">
+                  {
+                    ncs.map((value, index) => (
+                      <PillCheckbox 
+                        name="ncs"
+                        label={value}
+                        key={index}
+                      />
+                    ))
+                  }
+                </Col>
+                <Col xs={12}>
+                  <Button 
+                    block
+                    variant="info" 
+                    onClick={handleInputClick}
+                  >
+                    입력
+                  </Button>
+                </Col>
+              </Form.Row>
+            </Form>
+          : gongdbInputData.length > 0 
+            ? <DataTable 
+                data={gongdbInputData} 
+                onRowClick={(index) => {
+                  setClickedIndex(index);
+                  setModalShow(true);
+                }}
+              /> 
+            : <span style={{textAlign: "center", display: "block", paddingTop: 30, fontSize: 20}}>입력된 데이터가 없어요!</span>
         }
 
-        <FixedButton onClick={() => gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}} />
+        {
+          mode === "FORM" 
+           ? <FixedButton onClick={() => gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}} />
+           : null
+        }
+
       </Container>
     </>
   );

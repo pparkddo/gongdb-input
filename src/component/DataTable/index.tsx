@@ -8,7 +8,7 @@ interface Props {
 
 const DataTable = (props: Props) => {
   return (
-    <Table striped bordered hover>
+    <Table striped bordered hover className="mt-3">
       <thead>
         <tr>
           <th>#</th>
