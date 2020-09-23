@@ -221,8 +221,8 @@ function App() {
                     autoComplete="off" 
                     readOnly={isCertReadOnly}
                     tabIndex={isCertReadOnly ? -1 : undefined}
-                    placeholder={isCertReadOnly ? "활성화하려면 클릭" : undefined}
-                    onClick={() => setIsCertReadOnly(!isCertReadOnly)}
+                    placeholder={isCertReadOnly ? "활성화하려면 더블클릭" : undefined}
+                    onDoubleClick={() => setIsCertReadOnly(!isCertReadOnly)}
                     onFocus={(event: React.FocusEvent<HTMLInputElement>) => event.target.style.height = "250px"}
                     onBlur={(event: React.FocusEvent<HTMLInputElement>) => event.target.style.height = ""}
                     style={{transition: "height 0.5s"}}
@@ -238,8 +238,8 @@ function App() {
                     autoComplete="off" 
                     readOnly={isDepartmentReadOnly}
                     tabIndex={isDepartmentReadOnly ? -1 : undefined}
-                    placeholder={isDepartmentReadOnly ? "활성화하려면 클릭" : undefined}
-                    onClick={() => setIsDepartmentReadOnly(!isDepartmentReadOnly)}
+                    placeholder={isDepartmentReadOnly ? "활성화하려면 더블클릭" : undefined}
+                    onDoubleClick={() => setIsDepartmentReadOnly(!isDepartmentReadOnly)}
                     onFocus={(event: React.FocusEvent<HTMLInputElement>) => event.target.style.height = "250px"}
                     onBlur={(event: React.FocusEvent<HTMLInputElement>) => event.target.style.height = ""}
                     style={{transition: "height 0.5s"}}
