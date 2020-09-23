@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/gongdb-input/precache-manifest.bebbeb058d5486cdc9ca04ec309a69a7.js"
+  "/gongdb-input/precache-manifest.ab8fb888561ec6a9b7f6c9a649076ebb.js"
 );
 
 self.addEventListener('message', (event) => {
