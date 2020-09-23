@@ -162,6 +162,12 @@ function App() {
                   <Form.Control name="perfectLanguageScore" autoComplete="off" />
                 </Col>
               </Row>
+              <Row>
+                <Col xs={12}>
+                  <Form.Label>공고링크</Form.Label>
+                  <Form.Control name="link" autoComplete="off" />
+                </Col>
+              </Row>
 
               <Row className="mt-5">
                 <Col xs={12}>
