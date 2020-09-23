@@ -12,7 +12,7 @@ const Alert = (props: Props) => {
     <BootstrapAlert
       variant={props.variant ? props.variant : "success"}
       show={props.show} 
-      style={{position: "fixed", top: 15, right: 15}}
+      style={{position: "fixed", top: 15, right: 15, zIndex: 999}}
     >
       {props.title}
     </BootstrapAlert>
