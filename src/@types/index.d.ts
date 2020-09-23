@@ -11,7 +11,7 @@ interface GongdbInputData {
   languageScore: string
   perfectLanguageScore: string
   link: string
-  ncs: boolean[]
+  ncs: sring
   announcementTimestamp: string
   position: string
   sequence: string

@@ -1,39 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form } from "react-bootstrap";
-import "./App.css";
 import Alert from './component/Alert';
 import DataTable from './component/DataTable';
 import FixedButton from './component/FixedButton';
 import Modal from './component/Modal';
 import Navigation from './component/Navigation';
 import PillCheckbox from './component/PillCheckbox';
-
-const ncs = [
-  "의사소통능력",
-  "문제해결능력",
-  "대인관계능력",
-  "자원관리능력",
-  "직업윤리",
-  "정보능력",
-  "수리능력",
-  "직무수행능력",
-  "전공능력",
-];
-
-const exportJSON = (object: any): void => {
-  var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object));
-  
-  let a = document.createElement("a");
-  a.href = "data:" + data;
-  a.download = "data.json";
-
-  a.click();
-  a.remove();
-};
-
-const saveJSON = (object: any): void => {
-  localStorage.setItem("gongdb-input", JSON.stringify(object));
-};
+import { ncs, getGongdbInputData, clearForm, saveJSON, exportJSON } from './utils';
+import "./App.css";
 
 type Mode = "FORM" | "DATA";
 
@@ -66,59 +40,8 @@ function App() {
     }
   }, [isDepartmentReadOnly])
 
-  const clearForm = (): void => {
-    document.querySelectorAll(".erasable").forEach((element) => {
-      (element as HTMLInputElement).value = "";
-    });
-
-    document.querySelectorAll(".form-check-input").forEach((element) => {
-      const isChecked = (element as HTMLInputElement).checked;
-      if (isChecked) {
-        (element as HTMLInputElement).click();
-      }
-    });
-  };
-
   const focusOnFirst = (): void => {
     recruitTypeElement?.current?.focus();
-  };
-
-  const getGongdbInputData = (): GongdbInputData => {
-    let value = {} as GongdbInputData;
-
-    document.querySelectorAll(".form-control").forEach((element) => {
-      const name = element.attributes.getNamedItem("name")?.value as string;
-      const inputValue = (element as HTMLInputElement).value;
-      if (name in value) {
-        if (Array.isArray(value[name])) {
-          value = {...value, [name]: [...value[name] as string[], inputValue]};
-        }
-        else {
-          value = {...value, [name]: [value[name] as string, inputValue]};
-        }
-      }
-      else {
-        value = {...value, [name]: inputValue};
-      }
-    });
-    
-    document.querySelectorAll(".form-check-input").forEach((element) => {
-      const name = element.attributes.getNamedItem("name")?.value as string;
-      const isChecked = (element as HTMLInputElement).checked;
-      if (name in value) {
-        if (Array.isArray(value[name])) {
-          value = {...value, [name]: [...value[name] as boolean[], isChecked]};
-        }
-        else {
-          value = {...value, [name]: [value[name] as boolean, isChecked]};
-        }
-      }
-      else {
-        value = {...value, [name]: isChecked};
-      }
-    });
-
-    return value;
   };
 
   const toastAlert = (): void => {
@@ -175,8 +98,8 @@ function App() {
 
     (document.getElementsByName("isEither")[0] as HTMLInputElement).checked = data.isEither;
 
-    document.getElementsByName("ncs").forEach((element, key) => {
-      if ((element as HTMLInputElement).checked !== data.ncs[key]) {
+    document.getElementsByName("ncs").forEach((element) => {
+      if (data.ncs.includes((element as HTMLInputElement).value) && !(element as HTMLInputElement).checked) {
         element.click();
       }
     });
