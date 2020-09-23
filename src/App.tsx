@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Col, Container, Form } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import Alert from './component/Alert';
 import DataTable from './component/DataTable';
 import FixedButton from './component/FixedButton';
 import Modal from './component/Modal';
 import Navigation from './component/Navigation';
 import PillCheckbox from './component/PillCheckbox';
+import FormDivider from './component/FormDivider';
 import { ncs, getGongdbInputData, clearForm, saveJSON, exportJSON } from './utils';
 import "./App.css";
 
@@ -127,24 +128,31 @@ function App() {
 
         {
           mode === "FORM"
-          ? <Form>
-              <Form.Row id="input-form">
+          ? <Form id="input-form">
+              <Row>
+                <Col xs={12}>
+                  <FormDivider title="회사정보" />
+                </Col>
+              </Row>
+              <Row>
                 <Col xs={12}>
                   <Form.Label>회사명</Form.Label>
                   <Form.Control name="companyName" autoComplete="off" />
                 </Col>
-                <Col xs={6}>
-                  <Form.Label>접수일자</Form.Label>
-                  <Form.Control type="date" name="announcementTimestamp" autoComplete="off" />
-                </Col>
+              </Row>
+              <Row>
                 <Col xs={6}>
                   <Form.Label>차수</Form.Label>
                   <Form.Control name="sequence" autoComplete="off" />
                 </Col>
-                <Col xs={12}>
-                  <Form.Label>링크</Form.Label>
-                  <Form.Control name="link" autoComplete="off" />
+              </Row>
+              <Row>
+                <Col xs={6}>
+                  <Form.Label>접수일자</Form.Label>
+                  <Form.Control type="date" name="announcementTimestamp" autoComplete="off" />
                 </Col>
+              </Row>
+              <Row>
                 <Col xs={6}>
                   <Form.Label>지원가능 어학성적</Form.Label>
                   <Form.Control name="languageScore" autoComplete="off" />
@@ -153,11 +161,14 @@ function App() {
                   <Form.Label>어학성적 만점기준</Form.Label>
                   <Form.Control name="perfectLanguageScore" autoComplete="off" />
                 </Col>
+              </Row>
 
-                <Col xs={12} className="mt-3">
-                  <hr />
+              <Row className="mt-5">
+                <Col xs={12}>
+                  <FormDivider title="채용정보" />
                 </Col>
-
+              </Row>
+              <Row>
                 <Col xs={6}>
                   <Form.Label>근무형태</Form.Label>
                   <Form.Control name="workingType" autoComplete="off" />
@@ -166,6 +177,8 @@ function App() {
                   <Form.Label>직군</Form.Label>
                   <Form.Control name="position" autoComplete="off" />
                 </Col>
+              </Row>
+              <Row>
                 <Col xs={6}>
                   <Form.Label>채용수준</Form.Label>
                   <Form.Control name="recruitLevel" autoComplete="off" />
@@ -174,28 +187,32 @@ function App() {
                   <Form.Label>직급</Form.Label>
                   <Form.Control name="rank" autoComplete="off" />
                 </Col>
+              </Row>
 
-                <Col xs={12} className="mt-3">
-                  <hr />
+              <Row className="mt-5">
+                <Col xs={12}>
+                  <FormDivider title="채용상세" />
                 </Col>
-
+              </Row>
+              <Row>
                 <Col xs={12}>
                   <Form.Label>채용구분</Form.Label>
                   <Form.Control name="recruitType" className="erasable" autoComplete="off" ref={recruitTypeElement} />
                 </Col>
+              </Row>
+              <Row>
                 <Col xs={12}>
                   <Form.Label>지역</Form.Label>
                   <Form.Control name="districts" className="erasable" autoComplete="off" />
                 </Col>
+              </Row>
+              <Row>
                 <Col xs={12}>
                   <Form.Label>과목</Form.Label>
                   <Form.Control name="subjects" className="erasable" autoComplete="off" />
                 </Col>
-
-                <Col xs={12} className="mt-3">
-                  <hr />
-                </Col>
-
+              </Row>
+              <Row>
                 <Col xs={12}>
                   <Form.Label>지원가능 자격증</Form.Label>
                   <Form.Control 
@@ -211,6 +228,8 @@ function App() {
                     style={{transition: "height 0.5s"}}
                   />
                 </Col>
+              </Row>
+              <Row>
                 <Col xs={12}>
                   <Form.Label>지원가능 학과</Form.Label>
                   <Form.Control 
@@ -226,6 +245,8 @@ function App() {
                     style={{transition: "height 0.5s"}}
                   />
                 </Col>
+              </Row>
+              <Row>
                 <Col xs={12} className="mt-3 text-right">
                   <Form.Check 
                     inline 
@@ -240,6 +261,8 @@ function App() {
                     }}
                   />
                 </Col>
+              </Row>
+              <Row>
                 <Col xs={12} className="my-4 text-center">
                   {
                     ncs.map((value, index) => (
@@ -251,6 +274,9 @@ function App() {
                     ))
                   }
                 </Col>
+              </Row>
+
+              <Row className="mt-5">
                 <Col xs={12}>
                   <Button 
                     block
@@ -260,7 +286,7 @@ function App() {
                     입력
                   </Button>
                 </Col>
-              </Form.Row>
+              </Row>
             </Form>
           : gongdbInputData.length > 0 
             ? <DataTable 
