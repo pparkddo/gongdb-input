@@ -212,7 +212,7 @@ function App() {
                 </Col>
                 <Col xs={6}>
                   <Form.Label>접수일자</Form.Label>
-                  <Form.Control name="announcementTimestamp" autoComplete="off" />
+                  <Form.Control type="date" name="announcementTimestamp" autoComplete="off" />
                 </Col>
                 <Col xs={6}>
                   <Form.Label>차수</Form.Label>
