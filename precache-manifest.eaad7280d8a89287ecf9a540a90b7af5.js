@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "53298d57d0d346bb1a9df697f5a526bb",
+    "revision": "a5e8631f7b97cb50224838aab050c395",
     "url": "/gongdb-input/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/gongdb-input/static/css/2.f3cffc9e.chunk.css"
   },
   {
-    "revision": "3b0c8df7dfc075eee647",
+    "revision": "da1de1996a5fe01ecb12",
     "url": "/gongdb-input/static/css/main.cbd8b321.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/gongdb-input/static/js/2.b764f4cf.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "3b0c8df7dfc075eee647",
-    "url": "/gongdb-input/static/js/main.c7e40994.chunk.js"
+    "revision": "da1de1996a5fe01ecb12",
+    "url": "/gongdb-input/static/js/main.f87ede3c.chunk.js"
   },
   {
     "revision": "b588433f44da925daabf",
