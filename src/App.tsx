@@ -7,7 +7,7 @@ import Modal from './component/Modal';
 import Navigation from './component/Navigation';
 import PillCheckbox from './component/PillCheckbox';
 import FormDivider from './component/FormDivider';
-import { ncs, getGongdbInputData, clearForm, saveJSON, exportJSON } from './utils';
+import { ncs, getGongdbInputData, clearForm, saveJSON, exportPlainText } from './utils';
 import "./App.css";
 
 type Mode = "FORM" | "DATA";
@@ -114,7 +114,7 @@ function App() {
       <Navigation 
         onFormLinkClick={() => setMode("FORM")}
         onDataLInkClick={() => setMode("DATA")}
-        onExportButtonClick={() => exportJSON(gongdbInputData)} 
+        onExportButtonClick={() => exportPlainText(gongdbInputData)} 
       />
       <Container fluid>
         <Alert show={toastShow} title="정상적으로 입력되었습니다!" />

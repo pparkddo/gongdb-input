@@ -64,12 +64,12 @@ export const clearForm = (): void => {
   });
 };
 
-export const exportJSON = (object: any): void => {
-  var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object));
+export const exportPlainText = (object: any): void => {
+  var data = "text/plain;charset=utf-8," + encodeURIComponent(JSON.stringify(object));
   
   let a = document.createElement("a");
   a.href = "data:" + data;
-  a.download = "data.json";
+  a.download = "data.txt";
 
   a.click();
   a.remove();
