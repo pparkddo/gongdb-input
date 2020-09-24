@@ -137,6 +137,7 @@ function App() {
           onHideButtonClick={() => setCopyModalShow(false)}
           onActionButtonClick={() => {
             setMode("FORM");
+            window.location.href = window.location.href.replace("#table", "#form");
             setTimeout(() => {
               setCopyModalShow(false);
               loadDataToForm(gongdbInputData[clickedIndex as number]);
