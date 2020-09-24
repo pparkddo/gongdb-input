@@ -239,7 +239,10 @@ function App() {
                     name="subjects" 
                     className="erasable" 
                     autoComplete="off"
-                    style={{height: 40}}
+                    style={{
+                      height: 250,
+                      transition: "height 0.5s"
+                    }}
                   />
                 </Col>
               </Row>
@@ -257,7 +260,8 @@ function App() {
                     onDoubleClick={() => setIsCertReadOnly(!isCertReadOnly)}
                     style={{
                       textAlign: isCertReadOnly ? "center" : "start",
-                      height: isCertReadOnly ? 40 : ""
+                      height: isCertReadOnly ? 40 : 250,
+                      transition: "height 0.5s"
                     }}
                   />
                 </Col>
@@ -276,7 +280,8 @@ function App() {
                     onDoubleClick={() => setIsDepartmentReadOnly(!isDepartmentReadOnly)}
                     style={{
                       textAlign: isDepartmentReadOnly ? "center" : "start",
-                      height: isDepartmentReadOnly ? 40 : ""
+                      height: isDepartmentReadOnly ? 40 : 250,
+                      transition: "height 0.5s"
                     }}
                   />
                 </Col>
@@ -295,7 +300,8 @@ function App() {
                     onDoubleClick={() => setIsAnnouncementEtcReadOnly(!isAnnouncementEtcReadOnly)}
                     style={{
                       textAlign: isAnnouncementEtcReadOnly ? "center" : "start",
-                      height: isAnnouncementEtcReadOnly ? 40 : ""
+                      height: isAnnouncementEtcReadOnly ? 40 : 250,
+                      transition: "height 0.5s"
                     }}
                   />
                 </Col>
