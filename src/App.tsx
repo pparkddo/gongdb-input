@@ -323,7 +323,8 @@ function App() {
                 </Col>
               </Row>
               <Row>
-                <Col xs={12} className="mt-3 text-right">
+                <Col xs={12}>
+                  <Form.Label>메모</Form.Label>
                   <Form.Control
                     name="memo" 
                     className="erasable" 
