@@ -103,7 +103,7 @@ function App() {
     (document.getElementsByName("isEither")[0] as HTMLInputElement).checked = data.isEither;
 
     document.getElementsByName("ncs").forEach((element) => {
-      if (data.ncs.includes((element as HTMLInputElement).value) && !(element as HTMLInputElement).checked) {
+      if (data.ncs.includes((element as HTMLInputElement).value) !== (element as HTMLInputElement).checked) {
         element.click();
       }
     });
