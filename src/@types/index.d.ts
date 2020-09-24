@@ -16,5 +16,6 @@ interface GongdbInputData {
   position: string
   sequence: string
   subjects: string
+  annnouncementEtc: string
   isEither: boolean
 }

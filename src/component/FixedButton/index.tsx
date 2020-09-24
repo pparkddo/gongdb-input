@@ -4,6 +4,7 @@ import Alert from '../Alert';
 
 interface Props {
   onClick: () => void
+  onDoubleClick: () => void
 }
 
 const FixedButton = (props: Props) => {
@@ -11,7 +12,7 @@ const FixedButton = (props: Props) => {
 
   return (
     <>
-    <Alert show={toastShow} title="가장 최근 행이 복사되었습니다!" />
+    <Alert show={toastShow} title="정상적으로 복사되었습니다!" />
       <div 
         style={{
           position: "fixed", 
@@ -27,6 +28,13 @@ const FixedButton = (props: Props) => {
         }}
         onClick={() => {
           props.onClick();
+          setToastShow(true);
+          setTimeout(() => {
+            setToastShow(false);
+          }, 1000);
+        }}
+        onDoubleClick={() => {
+          props.onDoubleClick();
           setToastShow(true);
           setTimeout(() => {
             setToastShow(false);

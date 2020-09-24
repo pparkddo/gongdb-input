@@ -17,8 +17,10 @@ function App() {
   const [clickedIndex, setClickedIndex] = useState<number>();
   const [toastShow, setToastShow] = useState<boolean>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
+  const [copyModalShow, setCopyModalShow] = useState<boolean>(false);
   const [isCertReadOnly, setIsCertReadOnly] = useState<boolean>(true);
   const [isDepartmentReadOnly, setIsDepartmentReadOnly] = useState<boolean>(true);
+  const [isAnnouncementEtcReadOnly, setIsAnnouncementEtcReadOnly] = useState<boolean>(true);
   const [mode, setMode] = useState<Mode>("FORM");
 
   const recruitTypeElement = useRef<HTMLInputElement>(null);
@@ -118,12 +120,30 @@ function App() {
 
         <Modal 
           show={modalShow}
-          clickedIndex={clickedIndex as number}
           onHideButtonClick={() => setModalShow(false)}
-          onRemoveButtonClick={() => {
+          onActionButtonClick={() => {
             removeGongdbInputData(clickedIndex as number);
             setModalShow(false);
           }}
+          title="데이터삭제"
+          body={`${(clickedIndex as number)+1}번 데이터를 삭제하시겠습니까?`}
+          actionButtonName="삭제"
+          actionButtonVariant="danger"
+        />
+
+        <Modal 
+          show={copyModalShow}
+          onHideButtonClick={() => setCopyModalShow(false)}
+          onActionButtonClick={() => {
+            setMode("FORM");
+            setTimeout(() => {
+              setCopyModalShow(false);
+              loadDataToForm(gongdbInputData[clickedIndex as number]);
+            }, 300);
+          }}
+          title="데이터불러오기"
+          body={`${(clickedIndex as number)+1}번 데이터를 불러오시겠습니까?`}
+          actionButtonName="불러오기"
         />
 
         {
@@ -215,13 +235,20 @@ function App() {
               <Row>
                 <Col xs={12}>
                   <Form.Label>과목</Form.Label>
-                  <Form.Control name="subjects" className="erasable" autoComplete="off" />
+                  <Form.Control 
+                    as="textarea"
+                    name="subjects" 
+                    className="erasable" 
+                    autoComplete="off"
+                    style={{height: 40}}
+                  />
                 </Col>
               </Row>
               <Row>
                 <Col xs={12}>
                   <Form.Label>지원가능 자격증</Form.Label>
                   <Form.Control 
+                    as="textarea"
                     name="certificates" 
                     className="erasable" 
                     autoComplete="off" 
@@ -229,9 +256,10 @@ function App() {
                     tabIndex={isCertReadOnly ? -1 : undefined}
                     placeholder={isCertReadOnly ? "활성화하려면 더블클릭" : undefined}
                     onDoubleClick={() => setIsCertReadOnly(!isCertReadOnly)}
-                    onFocus={(event: React.FocusEvent<HTMLInputElement>) => event.target.style.height = "250px"}
-                    onBlur={(event: React.FocusEvent<HTMLInputElement>) => event.target.style.height = ""}
-                    style={{transition: "height 0.5s"}}
+                    style={{
+                      textAlign: isCertReadOnly ? "center" : "start",
+                      height: isCertReadOnly ? 40 : ""
+                    }}
                   />
                 </Col>
               </Row>
@@ -239,6 +267,7 @@ function App() {
                 <Col xs={12}>
                   <Form.Label>지원가능 학과</Form.Label>
                   <Form.Control 
+                    as="textarea"
                     name="departments" 
                     className="erasable" 
                     autoComplete="off" 
@@ -246,9 +275,29 @@ function App() {
                     tabIndex={isDepartmentReadOnly ? -1 : undefined}
                     placeholder={isDepartmentReadOnly ? "활성화하려면 더블클릭" : undefined}
                     onDoubleClick={() => setIsDepartmentReadOnly(!isDepartmentReadOnly)}
-                    onFocus={(event: React.FocusEvent<HTMLInputElement>) => event.target.style.height = "250px"}
-                    onBlur={(event: React.FocusEvent<HTMLInputElement>) => event.target.style.height = ""}
-                    style={{transition: "height 0.5s"}}
+                    style={{
+                      textAlign: isDepartmentReadOnly ? "center" : "start",
+                      height: isDepartmentReadOnly ? 40 : ""
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <Form.Label>공고별 기타사항</Form.Label>
+                  <Form.Control 
+                    as="textarea"
+                    name="announcementEtc" 
+                    className="erasable" 
+                    autoComplete="off" 
+                    readOnly={isAnnouncementEtcReadOnly}
+                    tabIndex={isAnnouncementEtcReadOnly ? -1 : undefined}
+                    placeholder={isAnnouncementEtcReadOnly ? "활성화하려면 더블클릭" : undefined}
+                    onDoubleClick={() => setIsAnnouncementEtcReadOnly(!isAnnouncementEtcReadOnly)}
+                    style={{
+                      textAlign: isAnnouncementEtcReadOnly ? "center" : "start",
+                      height: isAnnouncementEtcReadOnly ? 40 : ""
+                    }}
                   />
                 </Col>
               </Row>
@@ -299,6 +348,10 @@ function App() {
                 data={gongdbInputData} 
                 onRowClick={(index) => {
                   setClickedIndex(index);
+                  setCopyModalShow(true);
+                }}
+                onRowDoubleClick={(index) => {
+                  setClickedIndex(index);
                   setModalShow(true);
                 }}
               /> 
@@ -307,7 +360,10 @@ function App() {
 
         {
           mode === "FORM" 
-           ? <FixedButton onClick={() => gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}} />
+           ? <FixedButton 
+              onClick={() => gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}}
+              onDoubleClick={() => {}}
+             />
            : null
         }
 

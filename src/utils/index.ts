@@ -8,6 +8,7 @@ export const ncs = [
   "수리능력",
   "직무수행능력",
   "전공능력",
+  "기술능력",
 ];
 
 export const getGongdbInputData = (): GongdbInputData => {

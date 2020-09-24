@@ -4,6 +4,7 @@ import { Table } from 'react-bootstrap';
 interface Props {
   data: GongdbInputData[]
   onRowClick: (index: number) => void
+  onRowDoubleClick: (index: number) => void
 }
 
 const DataTable = (props: Props) => {
@@ -12,23 +13,24 @@ const DataTable = (props: Props) => {
       <thead>
         <tr>
           <th>#</th>
-          <th>회사명</th>
-          <th>공고연도</th>
-          <th>차수</th>
-          <th>어학</th>
-          <th>어학만점</th>
-          <th>링크</th>
-          <th>직군</th>
-          <th>근무형태</th>
-          <th>채용구분</th>
-          <th>지역</th>
-          <th>채용수준</th>
-          <th>직급</th>
-          <th>과목</th>
-          <th>자격증</th>
-          <th>학과</th>
-          <th>NCS</th>
-          <th>둘중하나</th>
+          <th style={{minWidth: 200}}>회사명</th>
+          <th style={{minWidth: 200}}>공고연도</th>
+          <th style={{minWidth: 150}}>차수</th>
+          <th style={{minWidth: 150}}>어학</th>
+          <th style={{minWidth: 150}}>어학만점</th>
+          <th style={{minWidth: 500}}>링크</th>
+          <th style={{minWidth: 150}}>직군</th>
+          <th style={{minWidth: 150}}>근무형태</th>
+          <th style={{minWidth: 150}}>채용구분</th>
+          <th style={{minWidth: 500}}>지역</th>
+          <th style={{minWidth: 150}}>채용수준</th>
+          <th style={{minWidth: 150}}>직급</th>
+          <th style={{minWidth: 500}}>과목</th>
+          <th style={{minWidth: 500}}>자격증</th>
+          <th style={{minWidth: 500}}>학과</th>
+          <th style={{minWidth: 500}}>공고별 기타사항</th>
+          <th style={{minWidth: 500}}>NCS</th>
+          <th style={{minWidth: 50}}>둘중하나</th>
         </tr>
       </thead>
       <tbody>
@@ -37,10 +39,9 @@ const DataTable = (props: Props) => {
             <tr 
               key={index} 
               data-key={index} 
-              onClick={() => props.onRowClick(index)}
             >
-              <td>{index+1}</td>
-              <td>{value.companyName}</td>
+              <td onClick={() => props.onRowClick(index)}>{index+1}</td>
+              <td onDoubleClick={() => props.onRowDoubleClick(index)}>{value.companyName}</td>
               <td>{value.announcementTimestamp}</td>
               <td>{value.sequence}</td>
               <td>{value.languageScore}</td>
@@ -55,6 +56,7 @@ const DataTable = (props: Props) => {
               <td>{value.subjects}</td>
               <td>{value.certificates}</td>
               <td>{value.departments}</td>
+              <td>{value.annnouncementEtc}</td>
               <td>{String(value.ncs)}</td>
               <td>{typeof value.isEither === "boolean" ? String(value.isEither) : ""}</td>
             </tr>
