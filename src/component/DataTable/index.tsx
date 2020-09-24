@@ -72,7 +72,7 @@ const DataTable = (props: Props) => {
               <td style={{maxWidth: 400, ...ellipsis}}>{value.subjects}</td>
               <td style={{maxWidth: 400, ...ellipsis}}>{value.certificates}</td>
               <td style={{maxWidth: 400, ...ellipsis}}>{value.departments}</td>
-              <td style={{maxWidth: 300, ...ellipsis}}>{value.annnouncementEtc}</td>
+              <td style={{maxWidth: 300, ...ellipsis}}>{value.announcementEtc}</td>
               <td style={{maxWidth: 400, ...ellipsis}}>{String(value.ncs)}</td>
               <td style={{maxWidth: 50, ...ellipsis}}>{typeof value.isEither === "boolean" ? String(value.isEither) : ""}</td>
               <td style={{maxWidth: 200, ...ellipsis}}>{value.memo}</td>
