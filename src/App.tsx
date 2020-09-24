@@ -21,6 +21,7 @@ function App() {
   const [isCertReadOnly, setIsCertReadOnly] = useState<boolean>(true);
   const [isDepartmentReadOnly, setIsDepartmentReadOnly] = useState<boolean>(true);
   const [isAnnouncementEtcReadOnly, setIsAnnouncementEtcReadOnly] = useState<boolean>(true);
+  const [isMemoReadOnly, setIsMemoReadOnly] = useState<boolean>(true);
   const [mode, setMode] = useState<Mode>("FORM");
 
   const recruitTypeElement = useRef<HTMLInputElement>(null);
@@ -165,8 +166,6 @@ function App() {
                   <Form.Label>차수</Form.Label>
                   <Form.Control name="sequence" autoComplete="off" />
                 </Col>
-              </Row>
-              <Row>
                 <Col xs={6}>
                   <Form.Label>접수일자</Form.Label>
                   <Form.Control type="date" name="announcementTimestamp" autoComplete="off" />
@@ -314,6 +313,19 @@ function App() {
                         event.currentTarget.checked = !event.currentTarget.checked
                       }
                     }}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12} className="mt-3 text-right">
+                  <Form.Control
+                    name="memo" 
+                    className="erasable" 
+                    autoComplete="off" 
+                    readOnly={isMemoReadOnly}
+                    tabIndex={isMemoReadOnly ? -1 : undefined}
+                    placeholder={isMemoReadOnly ? "활성화하려면 더블클릭" : undefined}
+                    onDoubleClick={() => setIsMemoReadOnly(!isMemoReadOnly)}
                   />
                 </Col>
               </Row>
