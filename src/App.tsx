@@ -101,6 +101,8 @@ function App() {
     (document.getElementsByName("departments")[0] as HTMLInputElement).value = data.departments;
 
     (document.getElementsByName("isEither")[0] as HTMLInputElement).checked = data.isEither;
+    (document.getElementsByName("announcementEtc")[0] as HTMLInputElement).value = data.announcementEtc;
+    (document.getElementsByName("memo")[0] as HTMLInputElement).value = data.memo;
 
     document.getElementsByName("ncs").forEach((element) => {
       if (data.ncs.includes((element as HTMLInputElement).value) !== (element as HTMLInputElement).checked) {
