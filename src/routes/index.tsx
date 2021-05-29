@@ -12,9 +12,9 @@ const Root: React.FC = () => (
     <Container fluid>
       <Switch>
         <Route path="/" component={Home} exact />
-        <Route path="/table" component={() => {
-          return <DataTable data={[]} onRowClick={() => {}} onRowDoubleClick={() => {}} />;
-        }} />
+        <Route path="/table" component={() => (
+          <DataTable data={[]} onRowClick={() => {}} onRowDoubleClick={() => {}} />
+        )} />
       </Switch>
     </Container>
   </BrowserRouter>

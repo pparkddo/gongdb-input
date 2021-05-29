@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Col, Form as BootstrapForm, Row } from "react-bootstrap";
+import { Button, Col, Form as BootstrapForm, InputGroup, Row } from "react-bootstrap";
+import { IoIosAdd, IoIosClose } from "react-icons/io";
 import FormDivider from "../FormDivider";
 import PillCheckbox from "../PillCheckbox";
 import "./AnnouncementInputForm.css";
@@ -41,7 +42,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   const [rank, setRank] = useState<string>("");
   const [recruitType, setRecruitType] = useState<string>("");
   const [districtName, setDistrictName] = useState<string>("");
-  const [subjects, setSubjects] = useState<string[]>([]);
+  const [subjects, setSubjects] = useState<string[]>([""]);
   const [isCertReadOnly, setIsCertReadOnly] = useState<boolean>(true);
   const [isDepartmentReadOnly, setIsDepartmentReadOnly] = useState<boolean>(true);
   const [isAnnouncementEtcReadOnly, setIsAnnouncementEtcReadOnly] = useState<boolean>(true);
@@ -85,11 +86,23 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
     setIsDepartmentReadOnly(true);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     props.onSubmit();
     focusOnFirst();
     setReadOnly();
-  }
+  };
+
+  const changeSubject = (value: string, index: number): void => {
+    const list = [...subjects];
+    list[index] = value;
+    setSubjects(list);
+  };
+
+  const removeSubject = (index: number): void => {
+    const list = [...subjects];
+    list.splice(index, 1);
+    setSubjects(list);
+  };
 
   useEffect(() => {
     if (isCertReadOnly) {
@@ -250,11 +263,45 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
         <Row>
           <Col xs={12}>
             <BootstrapForm.Label>과목</BootstrapForm.Label>
-            <BootstrapForm.Control
-              name="subject"
-              className="erasable"
-              autoComplete="off"
-            />
+          </Col>
+          <Col xs={12} className="text-center">
+            {
+              subjects.length === 1
+              ? <BootstrapForm.Control
+                  name="subject"
+                  value={subjects[0]}
+                  onChange={e => changeSubject(e.target.value, 0)}
+                  className="erasable"
+                  autoComplete="off"
+                />
+              : subjects.map((value, index) => (
+                  <InputGroup style={{"alignItems": "center", "marginTop": index === 0 ? 0 : 10}} key={index}>
+                    <BootstrapForm.Control
+                      name="subject"
+                      value={value}
+                      onChange={e => changeSubject(e.target.value, index)}
+                      className="erasable"
+                      autoComplete="off"
+                      style={{"borderRadius": "0.25rem"}}
+                    />
+                    <InputGroup.Append>
+                      <IoIosClose
+                        size={28}
+                        color="#777777"
+                        style={{"marginLeft": 5}}
+                        onClick={() => removeSubject(index)}
+                      />
+                    </InputGroup.Append>
+                  </InputGroup>
+                ))
+            }
+            <Button
+              variant="outline-info"
+              className="mt-3"
+              onClick={() => setSubjects([...subjects, ""])}
+            >
+              <IoIosAdd />
+            </Button>
           </Col>
         </Row>
         <Row>
