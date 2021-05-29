@@ -2,18 +2,16 @@ import React from 'react';
 import { Button, Nav, Navbar } from 'react-bootstrap';
 
 interface Props {
-  onFormLinkClick: () => void
-  onDataLInkClick: () => void
   onExportButtonClick: () => void
 }
 
 const Navigation = (props: Props) => {
   return (
     <Navbar bg="light">
-      <Navbar.Brand href="#">공디비</Navbar.Brand>
+      <Navbar.Brand href="/">공디비</Navbar.Brand>
       <Nav className="mr-auto">
-        <Nav.Link href="#form" onClick={props.onFormLinkClick}>Form</Nav.Link>
-        <Nav.Link href="#table" onClick={props.onDataLInkClick}>Table</Nav.Link>
+        <Nav.Link href="/">Home</Nav.Link>
+        <Nav.Link href="/table">Table</Nav.Link>
       </Nav>
       <Button 
         variant="outline-info" 
