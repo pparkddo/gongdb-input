@@ -10,9 +10,9 @@ interface AnnouncementInputFormProps {
 }
 
 const formStyle = {
-  "maxWidth": "500px",
-  "margin": "auto",
-  "padding": "40px 0",
+  maxWidth: "500px",
+  margin: "auto",
+  padding: "40px 0",
 };
 
 const ncs = [
@@ -34,8 +34,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   const [sequence, setSequence] = useState<string>("");
   const [receiptTimestamp, setReceiptTimestamp] = useState<string>("");
   const [link, setLink] = useState<string>("");
-  // languageScore
-  // perfectLanguageScore
+  const [languageScores, setLanguageScores] = useState<LanguageScore[]>([{languageName: "", languageScore: "", languagePerfectScore: ""}]);
   const [workingType, setWorkingType] = useState<string>("");
   const [positionName, setPositionName] = useState<string>("");
   const [recruitLevel, setRecruitLevel] = useState<string>("");
@@ -92,9 +91,29 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
     setReadOnly();
   };
 
+  const changeLanguageScore = (name: string, value: string, index: number): void => {
+    const list = [...languageScores];
+    list[index][name] = value;
+    setLanguageScores(list);
+  };
+
+  const removeLanguageScore = (index: number): void => {
+    const list = [...languageScores];
+    list.splice(index, 1);
+    setLanguageScores(list);
+  };
+
+  const addLanguageScore = (): void => {
+    setLanguageScores([...languageScores, {languageName: "", languageScore: "", languagePerfectScore: ""}]);
+  };
+
   const changeSubject = (value: string, index: number): void => {
     const list = [...subjects];
-    list[index] = value;
+    if (value === "" && list.length > 1) {
+      list.splice(index, 1);
+    } else {
+      list[index] = value;
+    }
     setSubjects(list);
   };
 
@@ -102,6 +121,73 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
     const list = [...subjects];
     list.splice(index, 1);
     setSubjects(list);
+  };
+
+  const renderLanguageScores = (): JSX.Element[] => {
+    return languageScores.map((value, index) => (
+      <Row style={{alignItems: "center", marginTop: index === 0 ? 0 : 10}} key={index}>
+        <Col xs={6}>
+          <BootstrapForm.Control
+            name="languageName"
+            value={languageScores[index].languageName}
+            onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
+            autoComplete="off"
+          />
+        </Col>
+        <Col xs={3}>
+          <BootstrapForm.Control
+            name="languageScore"
+            value={languageScores[index].languageScore}
+            onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
+            autoComplete="off"
+          />
+        </Col>
+        <Col xs={3}>
+          <InputGroup style={{alignItems: "center"}}>
+            <BootstrapForm.Control
+              name="languagePerfectScore"
+              value={languageScores[index].languagePerfectScore}
+              onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
+              autoComplete="off"
+              style={{borderRadius: "0.25rem"}}
+            />
+            <InputGroup.Append>
+              <IoIosClose
+                size={28}
+                color="#777777"
+                style={{marginLeft: 5}}
+                onClick={() => removeLanguageScore(index)}
+              />
+            </InputGroup.Append>
+          </InputGroup>
+        </Col>
+      </Row>
+    ));
+  };
+
+  const renderSubjects = (): JSX.Element[] => {
+    return subjects.map((value, index) => (
+      <Col xs={12} style={{marginTop: index === 0 ? 0 : 10}} key={index}>
+        <InputGroup style={{alignItems: "center"}}>
+          <BootstrapForm.Control
+            name="subject"
+            value={value}
+            onChange={e => changeSubject(e.target.value, index)}
+            className="erasable"
+            autoComplete="off"
+            style={{borderRadius: "0.25rem"}}
+          />
+          <InputGroup.Append>
+            <IoIosClose
+              size={28}
+              color="#777777"
+              style={{marginLeft: 5}}
+              onClick={() => removeSubject(index)}
+            />
+          </InputGroup.Append>
+        </InputGroup>
+      </Col>
+    ));
   };
 
   useEffect(() => {
@@ -175,12 +261,52 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
         </Row>
         <Row>
           <Col xs={6}>
-            <BootstrapForm.Label>지원가능 어학성적</BootstrapForm.Label>
-            <BootstrapForm.Control name="languageScore" autoComplete="off" />
+            <BootstrapForm.Label>어학시험명</BootstrapForm.Label>
           </Col>
-          <Col xs={6}>
+          <Col xs={3}>
+            <BootstrapForm.Label>지원가능 어학성적</BootstrapForm.Label>
+          </Col>
+          <Col xs={3}>
             <BootstrapForm.Label>어학성적 만점기준</BootstrapForm.Label>
-            <BootstrapForm.Control name="perfectLanguageScore" autoComplete="off" />
+          </Col>
+        </Row>
+        { languageScores.length === 1
+          ? <Row>
+              <Col xs={6}>
+                <BootstrapForm.Control
+                  name="languageName"
+                  value={languageScores[0].languageName}
+                  onChange={e => changeLanguageScore(e.target.name, e.target.value, 0)}
+                  autoComplete="off"
+                />
+              </Col>
+              <Col xs={3}>
+                <BootstrapForm.Control
+                  name="languageScore"
+                  value={languageScores[0].languageScore}
+                  onChange={e => changeLanguageScore(e.target.name, e.target.value, 0)}
+                  autoComplete="off"
+                />
+              </Col>
+              <Col xs={3}>
+                <BootstrapForm.Control
+                  name="languagePerfectScore"
+                  value={languageScores[0].languagePerfectScore}
+                  onChange={e => changeLanguageScore(e.target.name, e.target.value, 0)}
+                  autoComplete="off"
+                />
+              </Col>
+            </Row>
+          : renderLanguageScores() }
+        <Row>
+          <Col xs={12} className="text-center">
+            <Button
+              variant="outline-info"
+              className="mt-3"
+              onClick={addLanguageScore}
+            >
+              <IoIosAdd />
+            </Button>
           </Col>
         </Row>
 
@@ -259,42 +385,23 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
           <Col xs={12}>
             <FormDivider title="채용상세" />
           </Col>
-        </Row>
+        </Row>           
         <Row>
           <Col xs={12}>
             <BootstrapForm.Label>과목</BootstrapForm.Label>
           </Col>
-          <Col xs={12} className="text-center">
-            {
-              subjects.length === 1
-              ? <BootstrapForm.Control
+          { subjects.length === 1
+            ? <Col xs={12}>
+                <BootstrapForm.Control
                   name="subject"
                   value={subjects[0]}
                   onChange={e => changeSubject(e.target.value, 0)}
                   className="erasable"
                   autoComplete="off"
                 />
-              : subjects.map((value, index) => (
-                  <InputGroup style={{"alignItems": "center", "marginTop": index === 0 ? 0 : 10}} key={index}>
-                    <BootstrapForm.Control
-                      name="subject"
-                      value={value}
-                      onChange={e => changeSubject(e.target.value, index)}
-                      className="erasable"
-                      autoComplete="off"
-                      style={{"borderRadius": "0.25rem"}}
-                    />
-                    <InputGroup.Append>
-                      <IoIosClose
-                        size={28}
-                        color="#777777"
-                        style={{"marginLeft": 5}}
-                        onClick={() => removeSubject(index)}
-                      />
-                    </InputGroup.Append>
-                  </InputGroup>
-                ))
-            }
+              </Col>
+            : renderSubjects() }
+          <Col xs={12} className="text-center">
             <Button
               variant="outline-info"
               className="mt-3"
