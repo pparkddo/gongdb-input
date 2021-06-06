@@ -7,20 +7,6 @@ import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import "./AnnouncementInputForm.css";
 
-interface AnnouncementInputFormProps {
-  onSubmit: () => void;
-}
-
-interface Certificate {
-  id: number;
-  name: string;
-}
-
-interface Department {
-  id: number;
-  name: string;
-}
-
 const formStyle = {
   maxWidth: "500px",
   margin: "auto",
@@ -50,14 +36,16 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   const [workingType, setWorkingType] = useState<string>("");
   const [positionName, setPositionName] = useState<string>("");
   const [recruitLevel, setRecruitLevel] = useState<string>("");
+  const [headCount, setHeadCount] = useState<string>("");
   const [rank, setRank] = useState<string>("");
   const [recruitType, setRecruitType] = useState<string>("");
   const [districtName, setDistrictName] = useState<string>("");
   const [subjects, setSubjects] = useState<string[]>([""]);
+  const [ncsSubjects, setNcsSubjects] = useState<string[]>([]);
   const [certificateOptions, setCertificateOptions] = useState<string[]>([]);
-  const [certificates, setCertificates] = useState<string[]>([]);
+  const [selectedCertificates, setSelectedCertificates] = useState<(string|Selected)[]>([]);
   const [departmentOptions, setDepartmentOptions] = useState<string[]>([]);
-  const [departments, setDepartments] = useState<string[]>([]);
+  const [selectedDepartments, setSelectedDepartments] = useState<(string|Selected)[]>([]);
   const [notes, setNotes] = useState<string[]>([""]);
   const recruitTypeElement = useRef<HTMLInputElement>(null);
 
@@ -65,9 +53,43 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
     recruitTypeElement?.current?.focus();
   };
 
-  const handleSubmit = (): void => {
-    props.onSubmit();
+  const submit = (): void => {
+    const announcement = getAnnouncement();
+    props.onSubmit(announcement);
     focusOnFirst();
+  };
+
+  const getAnnouncement = (): AnnouncementInput => {
+    return {
+      "companyName": companyName,
+      "positionName": positionName,
+      "recruitType": recruitType,
+      "recruitLevel": recruitLevel,
+      "workingType": workingType,
+      "districtName": districtName,
+      "headCount": headCount,
+      "certificates": getCertificates(),
+      "departments": getDepartments(),
+      "subjects": getMergedSubjects(),
+      "languageScores": languageScores,
+      "notes": notes,
+      "receiptTimestamp": receiptTimestamp,
+      "sequence": sequence,
+      "link": link,
+      "rank": rank,
+    };
+  };
+
+  const getMergedSubjects = (): string[] => {
+    return [...subjects, ...ncsSubjects];
+  };
+
+  const getCertificates= (): string[] => {
+    return selectedCertificates.map(value => value.hasOwnProperty("label") ? (value as Selected).label : value) as string[];
+  };
+
+  const getDepartments = (): string[] => {
+    return selectedDepartments.map(value => value.hasOwnProperty("label") ? (value as Selected).label : value) as string[];
   };
 
   const changeLanguageScore = (name: string, value: string, index: number): void => {
@@ -94,6 +116,10 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
       list[index] = value;
     }
     setSubjects(list);
+  };
+
+  const removeNcsSubject = (value: string): void => {
+    setNcsSubjects(ncsSubjects.filter(each => each !== value));
   };
 
   const removeSubject = (index: number): void => {
@@ -237,7 +263,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
           </Col>
         </Row>
         <Row>
-          <Col xs={6}>
+          <Col xs={4}>
             <BootstrapForm.Label>차수</BootstrapForm.Label>
             <BootstrapForm.Control
               name="sequence"
@@ -246,10 +272,10 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               autoComplete="off"
             />
           </Col>
-          <Col xs={6}>
+          <Col xs={8}>
             <BootstrapForm.Label>접수일자</BootstrapForm.Label>
             <BootstrapForm.Control
-              type="date"
+              type="datetime-local"
               name="receiptTimestamp"
               value={receiptTimestamp}
               onChange={e => setReceiptTimestamp(e.target.value)}
@@ -371,7 +397,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
           </Col>
         </Row>
         <Row>
-          <Col xs={12}>
+          <Col xs={6}>
             <BootstrapForm.Label>채용구분</BootstrapForm.Label>
             <BootstrapForm.Control
               name="recruitType"
@@ -379,6 +405,15 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               onChange={e => setRecruitType(e.target.value)}
               autoComplete="off"
               ref={recruitTypeElement}
+            />
+          </Col>
+          <Col xs={6}>
+            <BootstrapForm.Label>채용인원</BootstrapForm.Label>
+            <BootstrapForm.Control
+              name="headCount"
+              value={headCount}
+              onChange={e => setHeadCount(e.target.value)}
+              autoComplete="off"
             />
           </Col>
         </Row>
@@ -431,6 +466,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
                 <PillCheckbox 
                   name="ncs"
                   label={value}
+                  onToggle={isChecked => isChecked ? setNcsSubjects([...ncsSubjects, value]) : removeNcsSubject(value)}
                   key={index}
                 />
               ))
@@ -445,8 +481,8 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               multiple
               allowNew
               minLength={1}
-              onChange={setCertificates}
-              selected={certificates}
+              onChange={setSelectedCertificates}
+              selected={selectedCertificates}
               options={certificateOptions}
             />
           </Col>
@@ -459,8 +495,8 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               multiple
               allowNew
               minLength={1}
-              onChange={setDepartments}
-              selected={departments}
+              onChange={setSelectedDepartments}
+              selected={selectedDepartments}
               options={departmentOptions}
             />
           </Col>
@@ -494,7 +530,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
             <Button 
               block
               variant="info" 
-              onClick={handleSubmit}
+              onClick={submit}
             >
               입력
             </Button>

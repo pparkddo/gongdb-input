@@ -2,17 +2,24 @@ import React, { useState } from 'react';
 import { Form } from "react-bootstrap";
 import "./pill-checkbox.css";
 
-interface Props {
-  name: string
-  label: string
+interface PillCheckboxProps {
+  name: string;
+  label: string;
+  onToggle: (checked: boolean) => void;
 }
 
 const accentColor = "#14a4be";
 const secondaryColor = "#ffffff";
 
-const PillCheckbox = (props: Props) => {
+const PillCheckbox = (props: PillCheckboxProps) => {
   const [isChecked, setChecked] = useState<boolean>(false);
   const [isFocused, setFocused] = useState<boolean>(false);
+  
+  const toggle = () => {
+    const toggled = !isChecked;
+    setChecked(toggled);
+    props.onToggle(toggled);
+  };
 
   return (
     <label 
@@ -28,12 +35,12 @@ const PillCheckbox = (props: Props) => {
         className="position-absolute" 
         value={props.label}
         checked={isChecked}
-        onChange={() => setChecked(!isChecked)}
+        onChange={toggle}
         onBlur={() => setFocused(false)}
         onFocus={() => setFocused(true)}
         onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
           if (event.key === "Enter") {
-            setChecked(!isChecked);
+            toggle();
           }
         }}
       />
