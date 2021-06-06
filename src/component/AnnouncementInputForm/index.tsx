@@ -3,10 +3,22 @@ import { Button, Col, Form as BootstrapForm, InputGroup, Row } from "react-boots
 import { IoIosAdd, IoIosClose } from "react-icons/io";
 import FormDivider from "../FormDivider";
 import PillCheckbox from "../PillCheckbox";
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import "./AnnouncementInputForm.css";
 
 interface AnnouncementInputFormProps {
   onSubmit: () => void;
+}
+
+interface Certificate {
+  id: number;
+  name: string;
+}
+
+interface Department {
+  id: number;
+  name: string;
 }
 
 const formStyle = {
@@ -42,53 +54,20 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   const [recruitType, setRecruitType] = useState<string>("");
   const [districtName, setDistrictName] = useState<string>("");
   const [subjects, setSubjects] = useState<string[]>([""]);
-  const [isCertReadOnly, setIsCertReadOnly] = useState<boolean>(true);
-  const [isDepartmentReadOnly, setIsDepartmentReadOnly] = useState<boolean>(true);
-  const [isAnnouncementEtcReadOnly, setIsAnnouncementEtcReadOnly] = useState<boolean>(true);
+  const [certificateOptions, setCertificateOptions] = useState<string[]>([]);
+  const [certificates, setCertificates] = useState<string[]>([]);
+  const [departmentOptions, setDepartmentOptions] = useState<string[]>([]);
+  const [departments, setDepartments] = useState<string[]>([]);
+  const [notes, setNotes] = useState<string[]>([""]);
   const recruitTypeElement = useRef<HTMLInputElement>(null);
-
-  const loadDataToForm = (data: GongdbInputData) => {
-    if (data.certificates) {
-      setIsCertReadOnly(false);
-    }
-    (document.getElementsByName("certificates")[0] as HTMLInputElement).value = data.certificates;
-    if (data.departments) {
-      setIsDepartmentReadOnly(false);
-    }
-    document.getElementsByName("ncs").forEach((element) => {
-      if (data.ncs.includes((element as HTMLInputElement).value) !== (element as HTMLInputElement).checked) {
-        element.click();
-      }
-    });
-  };
-
-  const clearForm = (): void => {
-    // recruitType
-    document.querySelectorAll(".erasable").forEach((element) => {
-      (element as HTMLInputElement).value = "";
-    });
-
-    document.querySelectorAll(".form-check-input").forEach((element) => {
-      const isChecked = (element as HTMLInputElement).checked;
-      if (isChecked) {
-        (element as HTMLInputElement).click();
-      }
-    });
-  };
 
   const focusOnFirst = (): void => {
     recruitTypeElement?.current?.focus();
   };
 
-  const setReadOnly = (): void => {
-    setIsCertReadOnly(true);
-    setIsDepartmentReadOnly(true);
-  };
-
   const handleSubmit = (): void => {
     props.onSubmit();
     focusOnFirst();
-    setReadOnly();
   };
 
   const changeLanguageScore = (name: string, value: string, index: number): void => {
@@ -123,13 +102,29 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
     setSubjects(list);
   };
 
+  const changeNote = (value: string, index: number) => {
+    const list = [...notes];
+    if (value === "" && list.length > 1) {
+      list.splice(index, 1);
+    } else {
+      list[index] = value;
+    }
+    setNotes(list);
+  };
+
+  const removeNote = (index: number): void => {
+    const list = [...notes];
+    list.splice(index, 1);
+    setNotes(list);
+  };
+
   const renderLanguageScores = (): JSX.Element[] => {
-    return languageScores.map((value, index) => (
+    return languageScores.map((languageScore, index) => (
       <Row style={{alignItems: "center", marginTop: index === 0 ? 0 : 10}} key={index}>
         <Col xs={6}>
           <BootstrapForm.Control
             name="languageName"
-            value={languageScores[index].languageName}
+            value={languageScore.languageName}
             onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
             autoComplete="off"
           />
@@ -137,7 +132,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
         <Col xs={3}>
           <BootstrapForm.Control
             name="languageScore"
-            value={languageScores[index].languageScore}
+            value={languageScore.languageScore}
             onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
             autoComplete="off"
           />
@@ -146,7 +141,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
           <InputGroup style={{alignItems: "center"}}>
             <BootstrapForm.Control
               name="languagePerfectScore"
-              value={languageScores[index].languagePerfectScore}
+              value={languageScore.languagePerfectScore}
               onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
               autoComplete="off"
               style={{borderRadius: "0.25rem"}}
@@ -166,14 +161,13 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   };
 
   const renderSubjects = (): JSX.Element[] => {
-    return subjects.map((value, index) => (
+    return subjects.map((subject, index) => (
       <Col xs={12} style={{marginTop: index === 0 ? 0 : 10}} key={index}>
         <InputGroup style={{alignItems: "center"}}>
           <BootstrapForm.Control
-            name="subject"
-            value={value}
+            name="subjects"
+            value={subject}
             onChange={e => changeSubject(e.target.value, index)}
-            className="erasable"
             autoComplete="off"
             style={{borderRadius: "0.25rem"}}
           />
@@ -190,17 +184,38 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
     ));
   };
 
+  const renderNotes = (): JSX.Element[] => {
+    return notes.map((note, index) => (
+      <Col xs={12} style={{marginTop: index === 0 ? 0 : 10}} key={index}>
+        <InputGroup style={{alignItems: "center"}}>
+          <BootstrapForm.Control
+            name="notes"
+            value={note}
+            onChange={e => changeNote(e.target.value, index)}
+            autoComplete="off"
+            style={{borderRadius: "0.25rem"}}
+          />
+          <InputGroup.Append>
+            <IoIosClose
+              size={28}
+              color="#777777"
+              style={{marginLeft: 5}}
+              onClick={() => removeNote(index)}
+            />
+          </InputGroup.Append>
+        </InputGroup>
+      </Col>
+    ));
+  };
+  
   useEffect(() => {
-    if (isCertReadOnly) {
-      (document.getElementsByName("certificates")[0] as HTMLInputElement).value = "";
-    }
-  }, [isCertReadOnly])
-
-  useEffect(() => {
-    if (isDepartmentReadOnly) {
-      (document.getElementsByName("departments")[0] as HTMLInputElement).value = "";
-    }
-  }, [isDepartmentReadOnly])
+    fetch("/api/certificate")
+      .then(response => response.json())
+      .then((data: Certificate[]) => setCertificateOptions(data.map(value => value.name)));
+    fetch("/api/departments")
+      .then(response => response.json())
+      .then((data: Department[]) => setDepartmentOptions(data.map(value => value.name)));
+  }, []);
 
   return (
     <div id="input-form" style={formStyle}>
@@ -360,7 +375,6 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
             <BootstrapForm.Label>채용구분</BootstrapForm.Label>
             <BootstrapForm.Control
               name="recruitType"
-              className="erasable"
               value={recruitType}
               onChange={e => setRecruitType(e.target.value)}
               autoComplete="off"
@@ -373,7 +387,6 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
             <BootstrapForm.Label>지역</BootstrapForm.Label>
             <BootstrapForm.Control
               name="districtName"
-              className="erasable"
               value={districtName}
               onChange={e => setDistrictName(e.target.value)}
               autoComplete="off"
@@ -396,7 +409,6 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
                   name="subject"
                   value={subjects[0]}
                   onChange={e => changeSubject(e.target.value, 0)}
-                  className="erasable"
                   autoComplete="off"
                 />
               </Col>
@@ -428,61 +440,53 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
         <Row>
           <Col xs={12}>
             <BootstrapForm.Label>지원가능 자격증</BootstrapForm.Label>
-            <BootstrapForm.Control 
-              as="textarea"
-              name="certificates" 
-              className="erasable" 
-              autoComplete="off" 
-              readOnly={isCertReadOnly}
-              tabIndex={isCertReadOnly ? -1 : undefined}
-              placeholder={isCertReadOnly ? "활성화하려면 더블클릭" : undefined}
-              onDoubleClick={() => setIsCertReadOnly(!isCertReadOnly)}
-              style={{
-                textAlign: isCertReadOnly ? "center" : "start",
-                height: isCertReadOnly ? 40 : 250,
-                transition: "height 0.5s"
-              }}
+            <Typeahead
+              id="certificates"
+              multiple
+              allowNew
+              minLength={1}
+              onChange={setCertificates}
+              selected={certificates}
+              options={certificateOptions}
             />
           </Col>
         </Row>
         <Row>
           <Col xs={12}>
             <BootstrapForm.Label>지원가능 학과</BootstrapForm.Label>
-            <BootstrapForm.Control 
-              as="textarea"
-              name="departments" 
-              className="erasable" 
-              autoComplete="off" 
-              readOnly={isDepartmentReadOnly}
-              tabIndex={isDepartmentReadOnly ? -1 : undefined}
-              placeholder={isDepartmentReadOnly ? "활성화하려면 더블클릭" : undefined}
-              onDoubleClick={() => setIsDepartmentReadOnly(!isDepartmentReadOnly)}
-              style={{
-                textAlign: isDepartmentReadOnly ? "center" : "start",
-                height: isDepartmentReadOnly ? 40 : 250,
-                transition: "height 0.5s"
-              }}
+            <Typeahead
+              id="departments"
+              multiple
+              allowNew
+              minLength={1}
+              onChange={setDepartments}
+              selected={departments}
+              options={departmentOptions}
             />
           </Col>
         </Row>
         <Row>
           <Col xs={12}>
-            <BootstrapForm.Label>공고별 기타사항</BootstrapForm.Label>
-            <BootstrapForm.Control 
-              as="textarea"
-              name="announcementEtc" 
-              className="erasable" 
-              autoComplete="off" 
-              readOnly={isAnnouncementEtcReadOnly}
-              tabIndex={isAnnouncementEtcReadOnly ? -1 : undefined}
-              placeholder={isAnnouncementEtcReadOnly ? "활성화하려면 더블클릭" : undefined}
-              onDoubleClick={() => setIsAnnouncementEtcReadOnly(!isAnnouncementEtcReadOnly)}
-              style={{
-                textAlign: isAnnouncementEtcReadOnly ? "center" : "start",
-                height: isAnnouncementEtcReadOnly ? 40 : 250,
-                transition: "height 0.5s"
-              }}
-            />
+            <BootstrapForm.Label>기타사항</BootstrapForm.Label>
+          </Col>
+          { notes.length === 1
+            ? <Col xs={12}>
+                <BootstrapForm.Control
+                  name="notes"
+                  value={notes[0]}
+                  onChange={e => changeNote(e.target.value, 0)}
+                  autoComplete="off"
+                />
+              </Col>
+            : renderNotes() }
+          <Col xs={12} className="text-center">
+            <Button
+              variant="outline-info"
+              className="mt-3"
+              onClick={() => setNotes([...notes, ""])}
+            >
+              <IoIosAdd />
+            </Button>
           </Col>
         </Row>
         <Row className="mt-5">
