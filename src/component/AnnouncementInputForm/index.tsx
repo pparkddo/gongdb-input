@@ -212,7 +212,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
     fetch("/api/certificate")
       .then(response => response.json())
       .then((data: Certificate[]) => setCertificateOptions(data.map(value => value.name)));
-    fetch("/api/departments")
+    fetch("/api/department")
       .then(response => response.json())
       .then((data: Department[]) => setDepartmentOptions(data.map(value => value.name)));
   }, []);
