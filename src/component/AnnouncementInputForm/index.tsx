@@ -32,7 +32,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   const [sequence, setSequence] = useState<string>("");
   const [receiptTimestamp, setReceiptTimestamp] = useState<string>("");
   const [link, setLink] = useState<string>("");
-  const [languageScores, setLanguageScores] = useState<LanguageScore[]>([{languageName: "", languageScore: "", languagePerfectScore: ""}]);
+  const [languageScores, setLanguageScores] = useState<LanguageScore[]>([{name: "", score: "", perfectScore: ""}]);
   const [workingType, setWorkingType] = useState<string>("");
   const [positionName, setPositionName] = useState<string>("");
   const [recruitLevel, setRecruitLevel] = useState<string>("");
@@ -105,7 +105,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   };
 
   const addLanguageScore = (): void => {
-    setLanguageScores([...languageScores, {languageName: "", languageScore: "", languagePerfectScore: ""}]);
+    setLanguageScores([...languageScores, {name: "", score: "", perfectScore: ""}]);
   };
 
   const changeSubject = (value: string, index: number): void => {
@@ -149,16 +149,16 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
       <Row style={{alignItems: "center", marginTop: index === 0 ? 0 : 10}} key={index}>
         <Col xs={6}>
           <BootstrapForm.Control
-            name="languageName"
-            value={languageScore.languageName}
+            name="name"
+            value={languageScore.name}
             onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
             autoComplete="off"
           />
         </Col>
         <Col xs={3}>
           <BootstrapForm.Control
-            name="languageScore"
-            value={languageScore.languageScore}
+            name="score"
+            value={languageScore.score}
             onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
             autoComplete="off"
           />
@@ -166,8 +166,8 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
         <Col xs={3}>
           <InputGroup style={{alignItems: "center"}}>
             <BootstrapForm.Control
-              name="languagePerfectScore"
-              value={languageScore.languagePerfectScore}
+              name="perfectScore"
+              value={languageScore.perfectScore}
               onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
               autoComplete="off"
               style={{borderRadius: "0.25rem"}}
@@ -315,24 +315,24 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
           ? <Row>
               <Col xs={6}>
                 <BootstrapForm.Control
-                  name="languageName"
-                  value={languageScores[0].languageName}
+                  name="name"
+                  value={languageScores[0].name}
                   onChange={e => changeLanguageScore(e.target.name, e.target.value, 0)}
                   autoComplete="off"
                 />
               </Col>
               <Col xs={3}>
                 <BootstrapForm.Control
-                  name="languageScore"
-                  value={languageScores[0].languageScore}
+                  name="score"
+                  value={languageScores[0].score}
                   onChange={e => changeLanguageScore(e.target.name, e.target.value, 0)}
                   autoComplete="off"
                 />
               </Col>
               <Col xs={3}>
                 <BootstrapForm.Control
-                  name="languagePerfectScore"
-                  value={languageScores[0].languagePerfectScore}
+                  name="perfectScore"
+                  value={languageScores[0].perfectScore}
                   onChange={e => changeLanguageScore(e.target.name, e.target.value, 0)}
                   autoComplete="off"
                 />

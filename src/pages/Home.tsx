@@ -13,10 +13,28 @@ const Home: React.FC = () => {
     }, 1000);
   };
 
+  const post = (announcement: AnnouncementInput): Promise<void> => {
+    return fetch("/api/announcement", {
+      method: "post",
+      body: JSON.stringify(announcement),
+      headers: {"Content-Type": "application/json;charset=utf8"}
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error("Error occurred in post announcement");
+    })
+  };
+
+  const submit = (announcement: AnnouncementInput): void => {
+    post(announcement).then(alert).catch(console.log);
+  };
+
   return (
      <>
       <Alert show={isToastVisible} title="정상적으로 입력되었습니다!" />
-      <AnnouncementInputForm onSubmit={alert}/>
+      <AnnouncementInputForm onSubmit={submit}/>
       <FixedButton 
         onClick={() => console.log("gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}")}
         onDoubleClick={() => {}}

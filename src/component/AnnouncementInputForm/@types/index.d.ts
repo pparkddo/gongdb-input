@@ -1,7 +1,7 @@
 interface LanguageScore {
-  [languageName: string]: string;
-  [languageScore: string]: string;
-  [languagePerfectScore: string]: string;
+  [name: string]: string;
+  [score: string]: string;
+  [perfectScore: string]: string;
 }
 
 interface AnnouncementInputFormProps {
