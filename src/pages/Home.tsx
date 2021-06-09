@@ -31,12 +31,16 @@ const Home: React.FC = () => {
     post(announcement).then(alert).catch(console.log);
   };
 
+  const getRecentAnnouncement = (): void => {
+    fetch("/api/announcement/recent").then(response => response.json()).then(console.log);
+  }
+
   return (
      <>
       <Alert show={isToastVisible} title="정상적으로 입력되었습니다!" />
       <AnnouncementInputForm onSubmit={submit}/>
       <FixedButton 
-        onClick={() => console.log("gongdbInputData.length ? loadDataToForm(gongdbInputData.slice(-1)[0]) : {}")}
+        onClick={getRecentAnnouncement}
         onDoubleClick={() => {}}
       />
     </>
