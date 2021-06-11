@@ -32,7 +32,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   const [sequence, setSequence] = useState<string>("");
   const [receiptTimestamp, setReceiptTimestamp] = useState<string>("");
   const [link, setLink] = useState<string>("");
-  const [languageScores, setLanguageScores] = useState<LanguageScore[]>([{name: "", score: "", perfectScore: ""}]);
+  const [languageScores, setLanguageScores] = useState<LanguageScoreInput[]>([{name: "", score: "", perfectScore: ""}]);
   const [workingType, setWorkingType] = useState<string>("");
   const [positionName, setPositionName] = useState<string>("");
   const [recruitLevel, setRecruitLevel] = useState<string>("");
@@ -242,6 +242,34 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
       .then(response => response.json())
       .then((data: Department[]) => setDepartmentOptions(data.map(value => value.name)));
   }, []);
+
+  useEffect(() => {
+    if (props.announcement === undefined) {
+        return;
+    }
+    setCompanyName(props.announcement.company.companyName);
+    setSequence(props.announcement.sequence);
+    setReceiptTimestamp(props.announcement.receiptTimestamp);
+    setLink(props.announcement.link);
+    setLanguageScores(props.announcement.languageScores.map(value => (
+        {name: value.languageName, score: value.score, perfectScore: value.perfectScore})));
+    setWorkingType(props.announcement.workingType);
+    setPositionName(props.announcement.position.positionName);
+    setRecruitLevel(props.announcement.recruitLevel);
+    setHeadCount(String(props.announcement.headCount));
+    setRank(props.announcement.rank);
+    setRecruitType(props.announcement.recruitType);
+    setDistrictName(props.announcement.districtName);
+    setNcsSubjects(props.announcement.subjects
+        .filter(value => ncs.includes(value.subjectName))
+        .map(value => value.subjectName));
+    setSubjects(props.announcement.subjects
+        .filter(value => !ncs.includes(value.subjectName))
+        .map(value => value.subjectName));
+    setSelectedCertificates(props.announcement.certificates);
+    setSelectedDepartments(props.announcement.departments);
+    setNotes(props.announcement.notes);
+  }, [props.announcement]);
 
   return (
     <div id="input-form" style={formStyle}>
@@ -466,6 +494,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
                 <PillCheckbox 
                   name="ncs"
                   label={value}
+                  isChecked={ncsSubjects.includes(value)}
                   onToggle={isChecked => isChecked ? setNcsSubjects([...ncsSubjects, value]) : removeNcsSubject(value)}
                   key={index}
                 />

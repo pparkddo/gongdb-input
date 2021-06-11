@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import Alert from '../component/Alert';
-import AnnouncementInputForm from '../component/AnnouncementInputForm';
-import FixedButton from '../component/FixedButton';
+import Alert from '../../component/Alert';
+import AnnouncementInputForm from '../../component/AnnouncementInputForm';
+import FixedButton from '../../component/FixedButton';
 
 const Home: React.FC = () => {
   const [isToastVisible, setToastVisible] = useState<boolean>(false);
+  const [recentAnnouncement, setRecentAnnouncement] = useState<Announcement>();
 
   const alert = (): void => {
     setToastVisible(true);
@@ -24,7 +25,7 @@ const Home: React.FC = () => {
         return response.json();
       }
       throw new Error("Error occurred in post announcement");
-    })
+    });
   };
 
   const submit = (announcement: AnnouncementInput): void => {
@@ -32,19 +33,16 @@ const Home: React.FC = () => {
   };
 
   const getRecentAnnouncement = (): void => {
-    fetch("/api/announcement/recent").then(response => response.json()).then(console.log);
-  }
+    fetch("/api/announcement/recent").then(response => response.json()).then(setRecentAnnouncement);
+  };
 
   return (
      <>
       <Alert show={isToastVisible} title="정상적으로 입력되었습니다!" />
-      <AnnouncementInputForm onSubmit={submit}/>
-      <FixedButton 
-        onClick={getRecentAnnouncement}
-        onDoubleClick={() => {}}
-      />
+      <AnnouncementInputForm announcement={recentAnnouncement} onSubmit={submit} />
+      <FixedButton onClick={getRecentAnnouncement} onDoubleClick={() => {}} />
     </>
   );
-}
+};
 
 export default Home;

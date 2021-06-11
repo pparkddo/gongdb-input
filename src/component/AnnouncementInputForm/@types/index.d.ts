@@ -1,11 +1,12 @@
-interface LanguageScore {
+interface LanguageScoreInput {
   [name: string]: string;
   [score: string]: string;
   [perfectScore: string]: string;
 }
 
 interface AnnouncementInputFormProps {
-  onSubmit: (announcement: Announcement) => void;
+  announcement?: Announcement;
+  onSubmit: (announcement: AnnouncementInput) => void;
 }
 
 interface Certificate {
@@ -29,7 +30,7 @@ interface AnnouncementInput {
   certificates: string[];
   departments: string[];
   subjects: string[];
-  languageScores: LanguageScore[];
+  languageScores: LanguageScoreInput[];
   notes: string[];
   receiptTimestamp: string;
   sequence: string;

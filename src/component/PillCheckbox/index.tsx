@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form } from "react-bootstrap";
 import "./pill-checkbox.css";
 
 interface PillCheckboxProps {
   name: string;
   label: string;
+  isChecked: boolean;
   onToggle: (checked: boolean) => void;
 }
 
@@ -14,6 +15,10 @@ const secondaryColor = "#ffffff";
 const PillCheckbox = (props: PillCheckboxProps) => {
   const [isChecked, setChecked] = useState<boolean>(false);
   const [isFocused, setFocused] = useState<boolean>(false);
+
+  useEffect(() => {
+    setChecked(props.isChecked);
+  }, [props.isChecked]);
   
   const toggle = () => {
     const toggled = !isChecked;
