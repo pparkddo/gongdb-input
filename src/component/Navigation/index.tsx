@@ -1,17 +1,17 @@
 import React from 'react';
 import { Button, Nav, Navbar } from 'react-bootstrap';
 
-interface Props {
+interface NavigationProps {
   onExportButtonClick: () => void
 }
 
-const Navigation = (props: Props) => {
+const Navigation = (props: NavigationProps) => {
   return (
     <Navbar bg="light">
       <Navbar.Brand href="/">공디비</Navbar.Brand>
       <Nav className="mr-auto">
         <Nav.Link href="/">Home</Nav.Link>
-        <Nav.Link href="/table">Table</Nav.Link>
+        <Nav.Link href="/announcement">List</Nav.Link>
       </Nav>
       <Button 
         variant="outline-info" 

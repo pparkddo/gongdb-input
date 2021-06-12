@@ -2,8 +2,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import * as React from 'react';
 import { Container } from 'react-bootstrap';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import DataTable from '../component/DataTable';
 import Navigation from '../component/Navigation';
+import Announcement from '../pages/Announcement';
 import Home from '../pages/Home';
 
 const Root: React.FC = () => (
@@ -12,9 +12,7 @@ const Root: React.FC = () => (
     <Container fluid>
       <Switch>
         <Route path="/" component={Home} exact />
-        <Route path="/table" component={() => (
-          <DataTable data={[]} onRowClick={() => {}} onRowDoubleClick={() => {}} />
-        )} />
+        <Route path="/announcement" component={Announcement} exact />
       </Switch>
     </Container>
   </BrowserRouter>
