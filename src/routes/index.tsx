@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Navigation from '../component/Navigation';
 import Announcement from '../pages/Announcement';
 import Home from '../pages/Home';
+import AnnouncementEdit from '../pages/AnnouncementEdit/index';
 
 const Root: React.FC = () => (
   <BrowserRouter>
@@ -13,6 +14,7 @@ const Root: React.FC = () => (
       <Switch>
         <Route path="/" component={Home} exact />
         <Route path="/announcement" component={Announcement} exact />
+        <Route path="/announcement/:id" component={AnnouncementEdit} exact />
       </Switch>
     </Container>
   </BrowserRouter>

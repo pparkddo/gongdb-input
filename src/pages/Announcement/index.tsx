@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Spinner } from 'react-bootstrap';
-import { FaInfoCircle, FaMapMarkerAlt, FaRegKiss, FaSuitcase } from "react-icons/fa";
+import { Button, Spinner } from 'react-bootstrap';
+import { FaClock, FaInfoCircle, FaMapMarkerAlt, FaRegKiss, FaSuitcase } from "react-icons/fa";
+import { useHistory } from 'react-router';
 
 interface Qualification {
   name: string;
@@ -14,11 +15,11 @@ const listContainerStyle: React.CSSProperties = {
 };
 
 const cardStyle: React.CSSProperties = {
-  maxWidth: "830px",
+  maxWidth: "720px",
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
-  padding: "50px",
+  padding: "40px",
   background: "#fffff",
   border: "1px solid #E5E5E5",
   boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
@@ -32,26 +33,21 @@ const companyNameStyle: React.CSSProperties = {
 };
 
 const positionStyle: React.CSSProperties = {
-  fontSize: "20px",
+  fontSize: "14px",
 };
 
 const informationStyle: React.CSSProperties = {
   color: "#9e9ea7",
+  fontSize: "14px",
 };
 
 const informationItemStyle: React.CSSProperties = {
   marginRight: "20px",
 };
 
-const timestampStyle: React.CSSProperties = {
+const buttonContainerStyle: React.CSSProperties = {
   textAlign: "right",
-  color: "#9e9ea7",
   width: "100%",
-};
-
-const emptyQualificationStyle: React.CSSProperties = {
-  textAlign: "center",
-  color: "#9e9ea7",
 };
 
 const qualificationListStyle: React.CSSProperties = {
@@ -61,6 +57,12 @@ const qualificationListStyle: React.CSSProperties = {
   flexWrap: "wrap",
   alignItems: "flex-start",
   padding: "0px",
+  fontSize: "14px",
+};
+
+const emptyQualificationStyle: React.CSSProperties = {
+  textAlign: "center",
+  color: "#9e9ea7",
 };
 
 const qualificationStyle: React.CSSProperties = {
@@ -81,8 +83,13 @@ const typeStyle: React.CSSProperties = {
 };
 
 const Announcement: React.FC = () => {
+  const history = useHistory();
   const [isFetching, setFetching] = useState<boolean>(true);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+
+  const renderSpinner = () => {        
+    return <div style={{textAlign: "center"}}><Spinner animation="border" variant="info" /></div>;
+  };
 
   const renderAnnouncements = () => {
     if (announcements.length === 0) {
@@ -102,12 +109,13 @@ const Announcement: React.FC = () => {
           <span style={informationItemStyle}><FaMapMarkerAlt /> {announcement.districtName}</span>
           <span style={informationItemStyle}><FaSuitcase /> {announcement.workingType}</span>
           <span style={informationItemStyle}><FaInfoCircle/> {announcement.recruitType}</span>
+          <span style={informationItemStyle}><FaClock/> {announcement.receiptTimestamp} 까지</span>
         </div>
         <div style={qualificationListStyle}>
           {renderQualifications(getQualifications(announcement))}
         </div>
-        <div style={timestampStyle}>
-          <span>{announcement.receiptTimestamp} 까지 접수</span>
+        <div style={buttonContainerStyle}>
+          <Button variant="info" onClick={() => history.push(`/announcement/${announcement.id}`)}>수정</Button>
         </div>
       </div>
     );
@@ -147,7 +155,7 @@ const Announcement: React.FC = () => {
  
   return (
     <div id="announcement-list-container" style={listContainerStyle}>
-      {isFetching ? <Spinner animation="grow" /> : renderAnnouncements()}
+      {isFetching ? renderSpinner() : renderAnnouncements()}
     </div>
   );
 };

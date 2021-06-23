@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form as BootstrapForm, InputGroup, Row } from "react-bootstrap";
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import { IoIosAdd, IoIosClose } from "react-icons/io";
 import FormDivider from "../FormDivider";
 import PillCheckbox from "../PillCheckbox";
-import { Typeahead } from "react-bootstrap-typeahead";
-import "react-bootstrap-typeahead/css/Typeahead.css";
 import "./AnnouncementInputForm.css";
 
 const formStyle = {
@@ -47,16 +47,11 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   const [departmentOptions, setDepartmentOptions] = useState<string[]>([]);
   const [selectedDepartments, setSelectedDepartments] = useState<(string|Selected)[]>([]);
   const [notes, setNotes] = useState<string[]>([""]);
-  const recruitTypeElement = useRef<HTMLInputElement>(null);
-
-  const focusOnFirst = (): void => {
-    recruitTypeElement?.current?.focus();
-  };
 
   const submit = (): void => {
     const announcement = getAnnouncement();
     props.onSubmit(announcement);
-    focusOnFirst();
+    window.scrollTo({top: 0, behavior: "smooth"});
   };
 
   const getAnnouncement = (): AnnouncementInput => {
@@ -432,7 +427,6 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               value={recruitType}
               onChange={e => setRecruitType(e.target.value)}
               autoComplete="off"
-              ref={recruitTypeElement}
             />
           </Col>
           <Col xs={6}>
