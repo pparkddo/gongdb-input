@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Spinner } from 'react-bootstrap';
 import { FaClock, FaInfoCircle, FaMapMarkerAlt, FaRegKiss, FaSuitcase } from "react-icons/fa";
 import { useHistory } from 'react-router';
+import Alert from "../../component/Alert";
 
 interface Qualification {
   name: string;
@@ -82,9 +83,24 @@ const typeStyle: React.CSSProperties = {
   textAlign: "right",
 };
 
+const buttonStyle: React.CSSProperties = {
+  marginLeft: "10px",
+}
+
+const deleteAnnouncement = (id: number): Promise<void> => {
+  return fetch(`/api/announcement/${id}`, {method: "delete"})
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error("Error occurred in post announcement");
+    });
+};
+
 const Announcement: React.FC = () => {
   const history = useHistory();
   const [isFetching, setFetching] = useState<boolean>(true);
+  const [isToastVisible, setToastVisible] = useState<boolean>(false);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   const renderSpinner = () => {        
@@ -115,10 +131,25 @@ const Announcement: React.FC = () => {
           {renderQualifications(getQualifications(announcement))}
         </div>
         <div style={buttonContainerStyle}>
-          <Button variant="info" onClick={() => history.push(`/announcement/${announcement.id}`)}>수정</Button>
+          <Button variant="danger" style={buttonStyle} onClick={() => handleDelete(announcement.id)}>삭제</Button>
+          <Button variant="info" style={buttonStyle} onClick={() => history.push(`/announcement/${announcement.id}`)}>수정</Button>
         </div>
       </div>
     );
+  };
+
+  const handleDelete = (id: number) => {
+    deleteAnnouncement(id)
+      .then(() => setAnnouncements(announcements.filter(value => value.id !== id)))
+      .then(alert)
+      .catch(console.log);
+  };
+
+  const alert = (): void => {
+    setToastVisible(true);
+    setTimeout(() => {
+      setToastVisible(false);
+    }, 1000);
   };
 
   const getQualifications = (announcement: Announcement): Qualification[] => {
@@ -154,9 +185,12 @@ const Announcement: React.FC = () => {
   }, []);
  
   return (
-    <div id="announcement-list-container" style={listContainerStyle}>
-      {isFetching ? renderSpinner() : renderAnnouncements()}
-    </div>
+    <>
+      <Alert show={isToastVisible} title="정상적으로 삭제되었습니다!" />
+      <div id="announcement-list-container" style={listContainerStyle}>
+        {isFetching ? renderSpinner() : renderAnnouncements()}
+      </div>
+    </>
   );
 };
  
