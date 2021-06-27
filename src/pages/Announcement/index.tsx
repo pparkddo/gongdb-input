@@ -1,8 +1,10 @@
+import assert from 'assert';
 import React, { useEffect, useState } from 'react';
 import { Button, Spinner } from 'react-bootstrap';
 import { FaClock, FaInfoCircle, FaMapMarkerAlt, FaRegKiss, FaSuitcase } from "react-icons/fa";
 import { useHistory } from 'react-router';
 import Alert from "../../component/Alert";
+import Pagination from '../../component/Pagination';
 
 interface Qualification {
   name: string;
@@ -10,6 +12,9 @@ interface Qualification {
 }
 
 const listContainerStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "center",
+  flexDirection: "column",
   maxWidth: "900px",
   margin: "auto",
   padding: "40px 0",
@@ -62,7 +67,6 @@ const qualificationListStyle: React.CSSProperties = {
 };
 
 const emptyQualificationStyle: React.CSSProperties = {
-  textAlign: "center",
   color: "#9e9ea7",
 };
 
@@ -102,6 +106,8 @@ const Announcement: React.FC = () => {
   const [isFetching, setFetching] = useState<boolean>(true);
   const [isToastVisible, setToastVisible] = useState<boolean>(false);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [totalPage, setTotalPage] = useState<number>();
 
   const renderSpinner = () => {        
     return <div style={{textAlign: "center"}}><Spinner animation="border" variant="info" /></div>;
@@ -177,19 +183,49 @@ const Announcement: React.FC = () => {
     );
   };
 
+  const renderAnnouncementAndPagination = () => {
+    return (
+      <div style={listContainerStyle}>
+        <div id="announcement-list-container">
+          {renderAnnouncements()}
+        </div>
+        <div id="pagination-container">
+          {renderPagination()}
+        </div>
+      </div>
+    );
+  };
+
+  const renderPagination = () => {
+    if (announcements.length === 0) {
+      return;
+    }
+    assert(totalPage !== undefined);
+    return (
+      <Pagination
+        currentPage={page}
+        totalPage={totalPage}
+        onPageChange={setPage}
+      />
+    );
+  };
+
+  const handleAnnouncementFetch = (data: any) => {
+    setTotalPage(data.totalPages);
+    setAnnouncements(data.content);
+  };
+
   useEffect(() => {
-    fetch("/api/announcement")
+    fetch(`/api/announcement?page=${page}`)
       .then(response => response.json())
-      .then(data => setAnnouncements(data.content))
+      .then(handleAnnouncementFetch)
       .then(() => setFetching(false));
-  }, []);
- 
+  }, [page]);
+
   return (
     <>
       <Alert show={isToastVisible} title="정상적으로 삭제되었습니다!" />
-      <div id="announcement-list-container" style={listContainerStyle}>
-        {isFetching ? renderSpinner() : renderAnnouncements()}
-      </div>
+      {isFetching ? renderSpinner() : renderAnnouncementAndPagination()}
     </>
   );
 };
