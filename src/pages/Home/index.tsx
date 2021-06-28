@@ -13,23 +13,40 @@ const post = (announcement: AnnouncementInput): Promise<void> => {
     if (response.ok) {
       return response.json();
     }
-    throw new Error("Error occurred in post announcement");
+    throw response.json();
   });
 };
 
 const Home: React.FC = () => {
-  const [isToastVisible, setToastVisible] = useState<boolean>(false);
+  const [isAlertVisible, setAlertVisible] = useState<boolean>(false);
+  const [isErrorAlertVisible, setErrorAlertVisible] = useState<boolean>(false);
   const [recentAnnouncement, setRecentAnnouncement] = useState<Announcement>();
+  const [error, setError] = useState<ErrorResponse>();
 
   const alert = (): void => {
-    setToastVisible(true);
+    setAlertVisible(true);
     setTimeout(() => {
-      setToastVisible(false);
+      setAlertVisible(false);
+    }, 1000);
+  };
+
+  const alertError = (): void => {
+    setErrorAlertVisible(true);
+    setTimeout(() => {
+      setErrorAlertVisible(false);
     }, 1000);
   };
 
   const submit = (announcement: AnnouncementInput): void => {
-    post(announcement).then(alert).catch(console.log);
+    post(announcement)
+      .then(() => {
+        alert();
+        setError(undefined);
+      })
+      .catch(errorPromise => errorPromise.then((error: ErrorResponse) => {
+        alertError();
+        setError(error);
+      }));
   };
 
   const getRecentAnnouncement = (): void => {
@@ -38,8 +55,13 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      <Alert show={isToastVisible} title="정상적으로 입력되었습니다!" />
-      <AnnouncementInputForm announcement={recentAnnouncement} onSubmit={submit} />
+      <Alert show={isAlertVisible} title="정상적으로 입력되었습니다!" />
+      <Alert show={isErrorAlertVisible} variant="danger" title={error?.message || ""} />
+      <AnnouncementInputForm
+        announcement={recentAnnouncement}
+        fieldErrors={error?.fieldErrors}
+        onSubmit={submit}
+      />
       <FixedButton onClick={getRecentAnnouncement} onDoubleClick={() => {}} />
     </div>
   );

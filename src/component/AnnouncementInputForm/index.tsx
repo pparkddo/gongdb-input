@@ -6,6 +6,7 @@ import { IoIosAdd, IoIosClose } from "react-icons/io";
 import FormDivider from "../FormDivider";
 import PillCheckbox from "../PillCheckbox";
 import "./AnnouncementInputForm.css";
+import assert from 'assert';
 
 const formStyle = {
   maxWidth: "500px",
@@ -65,9 +66,9 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
       "headCount": headCount,
       "certificates": getCertificates(),
       "departments": getDepartments(),
-      "subjects": getMergedSubjects(),
-      "languageScores": languageScores,
-      "notes": notes,
+      "subjects": getEmptyStringRemovedSubjects(getMergedSubjects()),
+      "languageScores": getEmptyStringRemovedLanguageScores(),
+      "notes": getEmptyStringRemovedNotes(),
       "receiptTimestamp": receiptTimestamp,
       "sequence": sequence,
       "link": link,
@@ -75,16 +76,34 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
     };
   };
 
+  const getEmptyStringRemovedNotes = () => {
+    const lastNote = notes[notes.length-1];
+    return lastNote ? notes : notes.slice(0, -1);
+  };
+
+  const getEmptyStringRemovedLanguageScores = () => {
+    const lastLanguageScore = languageScores[languageScores.length-1];
+    const isAnyPropertiesAreNotEmpty = Object.values(lastLanguageScore).some(value => value);
+    return isAnyPropertiesAreNotEmpty ? languageScores : languageScores.slice(0, -1);
+  };
+
   const getMergedSubjects = (): string[] => {
     return [...subjects, ...ncsSubjects];
   };
 
+  const getEmptyStringRemovedSubjects = (mergedSubjects: string[]) => {
+    const lastMergedSubject = mergedSubjects[mergedSubjects.length-1];
+    return lastMergedSubject ? mergedSubjects : mergedSubjects.slice(0, -1);
+  };
+
   const getCertificates= (): string[] => {
-    return selectedCertificates.map(value => value.hasOwnProperty("label") ? (value as Selected).label : value) as string[];
+    return selectedCertificates.map(
+        value => value.hasOwnProperty("label") ? (value as Selected).label : value) as string[];
   };
 
   const getDepartments = (): string[] => {
-    return selectedDepartments.map(value => value.hasOwnProperty("label") ? (value as Selected).label : value) as string[];
+    return selectedDepartments.map(
+        value => value.hasOwnProperty("label") ? (value as Selected).label : value) as string[];
   };
 
   const changeLanguageScore = (name: string, value: string, index: number): void => {
@@ -147,16 +166,24 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
             name="name"
             value={languageScore.name}
             onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
+            isInvalid={isFieldError(`languageScores[${index}].name`)}
             autoComplete="off"
           />
+          <BootstrapForm.Control.Feedback type="invalid">
+            {getFieldErrorReason(`languageScores[${index}].name`)}
+          </BootstrapForm.Control.Feedback>
         </Col>
         <Col xs={3}>
           <BootstrapForm.Control
             name="score"
             value={languageScore.score}
             onChange={e => changeLanguageScore(e.target.name, e.target.value, index)}
+            isInvalid={isFieldError(`languageScores[${index}].score`)}
             autoComplete="off"
           />
+          <BootstrapForm.Control.Feedback type="invalid">
+            {getFieldErrorReason(`languageScores[${index}].score`)}
+          </BootstrapForm.Control.Feedback>
         </Col>
         <Col xs={3}>
           <InputGroup style={{alignItems: "center"}}>
@@ -189,6 +216,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
             name="subjects"
             value={subject}
             onChange={e => changeSubject(e.target.value, index)}
+            isInvalid={isFieldError(`subjects[${index}]`)}
             autoComplete="off"
             style={{borderRadius: "0.25rem"}}
           />
@@ -200,6 +228,9 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               onClick={() => removeSubject(index)}
             />
           </InputGroup.Append>
+          <BootstrapForm.Control.Feedback type="invalid">
+            {getFieldErrorReason(`subjects[${index}]`)}
+          </BootstrapForm.Control.Feedback>
         </InputGroup>
       </Col>
     ));
@@ -213,6 +244,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
             name="notes"
             value={note}
             onChange={e => changeNote(e.target.value, index)}
+            isInvalid={isFieldError(`notes[${index}]`)}
             autoComplete="off"
             style={{borderRadius: "0.25rem"}}
           />
@@ -223,10 +255,32 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               style={{marginLeft: 5}}
               onClick={() => removeNote(index)}
             />
+            <BootstrapForm.Control.Feedback type="invalid">
+              {getFieldErrorReason(`notes[${index}]`)}
+            </BootstrapForm.Control.Feedback>
           </InputGroup.Append>
         </InputGroup>
       </Col>
     ));
+  };
+
+  const isFieldError = (fieldName: string): boolean => {
+    if (props.fieldErrors === undefined) {
+        return false;
+    }
+    return props.fieldErrors.some(value => value.field === fieldName);
+  };
+
+  const getFieldErrorReason = (fieldName: string): string => {
+    if (props.fieldErrors === undefined) {
+      return ""
+    }
+    const fieldError = props.fieldErrors.filter(value => value.field === fieldName);
+    if (fieldError.length === 0) {
+      return "";
+    }
+    assert(fieldError.length === 1);
+    return fieldError[0].reason;
   };
   
   useEffect(() => {
@@ -281,8 +335,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               name="companyName"
               value={companyName}
               onChange={e => setCompanyName(e.target.value)}
+              isInvalid={isFieldError("companyName")}
               autoComplete="off"
             />
+            <BootstrapForm.Control.Feedback type="invalid">
+              {getFieldErrorReason("companyName")}
+            </BootstrapForm.Control.Feedback>
           </Col>
         </Row>
         <Row>
@@ -302,8 +360,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               name="receiptTimestamp"
               value={receiptTimestamp}
               onChange={e => setReceiptTimestamp(e.target.value)}
+              isInvalid={isFieldError("receiptTimestamp")}
               autoComplete="off"
             />
+            <BootstrapForm.Control.Feedback type="invalid">
+              {getFieldErrorReason("receiptTimestamp")}
+            </BootstrapForm.Control.Feedback>
           </Col>
         </Row>
         <Row>
@@ -341,16 +403,24 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
                   name="name"
                   value={languageScores[0].name}
                   onChange={e => changeLanguageScore(e.target.name, e.target.value, 0)}
+                  isInvalid={isFieldError("languageScores[0].name")}
                   autoComplete="off"
                 />
+                <BootstrapForm.Control.Feedback type="invalid">
+                  {getFieldErrorReason("languageScores[0].name")}
+                </BootstrapForm.Control.Feedback>
               </Col>
               <Col xs={3}>
                 <BootstrapForm.Control
                   name="score"
                   value={languageScores[0].score}
                   onChange={e => changeLanguageScore(e.target.name, e.target.value, 0)}
+                  isInvalid={isFieldError("languageScores[0].score")}
                   autoComplete="off"
                 />
+                <BootstrapForm.Control.Feedback type="invalid">
+                  {getFieldErrorReason("languageScores[0].score")}
+                </BootstrapForm.Control.Feedback>
               </Col>
               <Col xs={3}>
                 <BootstrapForm.Control
@@ -386,8 +456,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               name="workingType"
               value={workingType}
               onChange={e => setWorkingType(e.target.value)}
+              isInvalid={isFieldError("workingType")}
               autoComplete="off"
             />
+            <BootstrapForm.Control.Feedback type="invalid">
+              {getFieldErrorReason("workingType")}
+            </BootstrapForm.Control.Feedback>
           </Col>
           <Col xs={6}>
             <BootstrapForm.Label>직군</BootstrapForm.Label>
@@ -395,8 +469,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               name="positionName"
               value={positionName}
               onChange={e => setPositionName(e.target.value)}
+              isInvalid={isFieldError("positionName")}
               autoComplete="off"
             />
+            <BootstrapForm.Control.Feedback type="invalid">
+              {getFieldErrorReason("positionName")}
+            </BootstrapForm.Control.Feedback>
           </Col>
         </Row>
         <Row>
@@ -406,8 +484,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               name="recruitLevel"
               value={recruitLevel}
               onChange={e => setRecruitLevel(e.target.value)}
+              isInvalid={isFieldError("recruitLevel")}
               autoComplete="off"
             />
+            <BootstrapForm.Control.Feedback type="invalid">
+              {getFieldErrorReason("recruitLevel")}
+            </BootstrapForm.Control.Feedback>
           </Col>
           <Col xs={6}>
             <BootstrapForm.Label>직급</BootstrapForm.Label>
@@ -426,8 +508,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               name="recruitType"
               value={recruitType}
               onChange={e => setRecruitType(e.target.value)}
+              isInvalid={isFieldError("recruitType")}
               autoComplete="off"
             />
+            <BootstrapForm.Control.Feedback type="invalid">
+              {getFieldErrorReason("recruitType")}
+            </BootstrapForm.Control.Feedback>
           </Col>
           <Col xs={6}>
             <BootstrapForm.Label>채용인원</BootstrapForm.Label>
@@ -435,8 +521,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               name="headCount"
               value={headCount}
               onChange={e => setHeadCount(e.target.value)}
+              isInvalid={isFieldError("headCount")}
               autoComplete="off"
             />
+            <BootstrapForm.Control.Feedback type="invalid">
+              {getFieldErrorReason("headCount")}
+            </BootstrapForm.Control.Feedback>
           </Col>
         </Row>
         <Row>
@@ -446,8 +536,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
               name="districtName"
               value={districtName}
               onChange={e => setDistrictName(e.target.value)}
+              isInvalid={isFieldError("districtName")}
               autoComplete="off"
             />
+            <BootstrapForm.Control.Feedback type="invalid">
+              {getFieldErrorReason("districtName")}
+            </BootstrapForm.Control.Feedback>
           </Col>
         </Row>
 
@@ -466,8 +560,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
                   name="subject"
                   value={subjects[0]}
                   onChange={e => changeSubject(e.target.value, 0)}
+                  isInvalid={isFieldError("subjects[0]")}
                   autoComplete="off"
                 />
+                <BootstrapForm.Control.Feedback type="invalid">
+                  {getFieldErrorReason("subjects[0]")}
+                </BootstrapForm.Control.Feedback>
               </Col>
             : renderSubjects() }
           <Col xs={12} className="text-center">
@@ -534,8 +632,12 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
                   name="notes"
                   value={notes[0]}
                   onChange={e => changeNote(e.target.value, 0)}
+                  isInvalid={isFieldError("notes[0]")}
                   autoComplete="off"
                 />
+                <BootstrapForm.Control.Feedback type="invalid">
+                  {getFieldErrorReason("notes[0]")}
+                </BootstrapForm.Control.Feedback>
               </Col>
             : renderNotes() }
           <Col xs={12} className="text-center">

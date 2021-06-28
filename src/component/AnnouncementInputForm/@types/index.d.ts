@@ -6,6 +6,7 @@ interface LanguageScoreInput {
 
 interface AnnouncementInputFormProps {
   announcement?: Announcement;
+  fieldErrors?: FieldError[];
   onSubmit: (announcement: AnnouncementInput) => void;
 }
 
