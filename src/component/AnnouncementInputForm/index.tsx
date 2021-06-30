@@ -66,7 +66,7 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
       "headCount": headCount,
       "certificates": getCertificates(),
       "departments": getDepartments(),
-      "subjects": getEmptyStringRemovedSubjects(getMergedSubjects()),
+      "subjects": [...ncsSubjects, ...getEmptyStringRemovedSubjects()],
       "languageScores": getEmptyStringRemovedLanguageScores(),
       "notes": getEmptyStringRemovedNotes(),
       "receiptTimestamp": receiptTimestamp,
@@ -77,23 +77,28 @@ const AnnouncementInputForm: React.FC<AnnouncementInputFormProps> = props => {
   };
 
   const getEmptyStringRemovedNotes = () => {
+    if (!notes.length) {
+      return [];
+    }
     const lastNote = notes[notes.length-1];
     return lastNote ? notes : notes.slice(0, -1);
   };
 
   const getEmptyStringRemovedLanguageScores = () => {
+    if (!languageScores.length) {
+      return [];
+    }
     const lastLanguageScore = languageScores[languageScores.length-1];
     const isAnyPropertiesAreNotEmpty = Object.values(lastLanguageScore).some(value => value);
     return isAnyPropertiesAreNotEmpty ? languageScores : languageScores.slice(0, -1);
   };
 
-  const getMergedSubjects = (): string[] => {
-    return [...subjects, ...ncsSubjects];
-  };
-
-  const getEmptyStringRemovedSubjects = (mergedSubjects: string[]) => {
-    const lastMergedSubject = mergedSubjects[mergedSubjects.length-1];
-    return lastMergedSubject ? mergedSubjects : mergedSubjects.slice(0, -1);
+  const getEmptyStringRemovedSubjects = () => {
+    if (!subjects.length) {
+      return [];
+    }
+    const lastSubject = subjects[subjects.length-1];
+    return lastSubject ? subjects : subjects.slice(0, -1);
   };
 
   const getCertificates= (): string[] => {
